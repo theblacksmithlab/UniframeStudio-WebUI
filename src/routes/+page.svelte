@@ -42,7 +42,7 @@
 			<!-- Кнопка меню справа -->
 			<button class="flex items-center justify-center p-2 hover:bg-white/10 rounded-lg transition-colors duration-200">
 				<img
-					src="/menu-icon_6.png"
+					src="/menu-icon.png"
 					alt="Menu"
 					class="h-12 w-12"
 				/>
