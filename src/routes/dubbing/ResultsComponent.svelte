@@ -61,7 +61,7 @@
 			Video Dubbing Completed! 🎉
 		</h2>
 		<p class="text-white/70 text-lg">
-			Your video has been successfully processed with AI dubbing
+			Your video has been successfully processed with the Uniframe Dubbing System
 		</p>
 	</div>
 
@@ -76,7 +76,7 @@
 						<svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
 						</svg>
-						Your Dubbed Video {isPremiumUser ? '(Premium)' : '(with ads)'}
+						Your Dubbed Video {isPremiumUser ? '(Premium Version)' : '(Free Version)'}
 					</h3>
 				</div>
 
@@ -102,7 +102,7 @@
 									<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
 									</svg>
-									This video includes intro and outro advertisements
+									The free version contains branding elements. Purchase the clean version without ads and watermark via the link below.
 								</p>
 							</div>
 						{:else}
@@ -148,7 +148,7 @@
 							</div>
 							<div class="text-left">
 								<p class="font-semibold">Dubbed Video {isPremiumUser ? '(Premium)' : '(with ads)'}</p>
-								<p class="text-sm text-white/60">Your processed video with AI dubbing</p>
+								<p class="text-sm text-white/60">Your processed video with Uniframe Smart Dubbing</p>
 							</div>
 						</div>
 						<svg class="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">

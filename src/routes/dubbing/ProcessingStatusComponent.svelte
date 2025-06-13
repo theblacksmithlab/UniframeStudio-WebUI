@@ -92,7 +92,7 @@
 			Processing Your Video
 		</h2>
 		<p class="text-white/70 text-lg">
-			AI is working on your video dubbing. This may take several minutes.
+			The system is working on your video dubbing. This can take anywhere from a few minutes to several hours.
 		</p>
 	</div>
 
@@ -198,7 +198,7 @@
 
 		<!-- Информация о процессе -->
 		<div class="bg-white/5 rounded-xl p-6">
-			<h4 class="text-lg font-semibold text-white mb-4">Process Information</h4>
+			<h4 class="text-lg font-semibold text-white mb-4">Processing Information</h4>
 			<div class="space-y-2 text-sm">
 				<div class="flex justify-between">
 					<span class="text-white/60">Pipeline ID:</span>
@@ -224,13 +224,13 @@
 			<h4 class="text-lg font-semibold text-white mb-4">Actions</h4>
 			<div class="space-y-4">
 				<p class="text-white/70 text-sm">
-					Processing cannot be stopped once started. Please wait for completion.
+					Processing cannot be stopped once started. You can go to the main page, but it will continue in the background.
 				</p>
 				<button
 					on:click={handleCancel}
 					class="w-full px-4 py-2 text-white/70 hover:text-white hover:bg-white/10 border border-white/20 hover:border-white/30 rounded-lg transition-all duration-200 text-sm"
 				>
-					Cancel & Return Home
+					Return Home
 				</button>
 			</div>
 		</div>

@@ -4,7 +4,7 @@ import type {
 	DubbingPipelineRequest,
 	DubbingPipelineResponse,
 	DubbingPipelineStatus,
-	ApiError as ApiErrorType
+	ApiError as ApiErrorType, SendMagicLinkRequest, AuthResponse, VerifyTokenRequest, SessionCheckResponse
 } from '$lib/types/api_types';
 
 const API_BASE_URL = 'https://api.blacksmith-lab.com';
@@ -28,6 +28,13 @@ class ApiClient {
 		this.baseUrl = baseUrl;
 	}
 
+	private getAuthHeaders(): Record<string, string> {
+		if (typeof window === 'undefined') return {};
+
+		const token = localStorage.getItem('session_token');
+		return token ? { 'Authorization': `Bearer ${token}` } : {};
+	}
+
 	private async request<T>(
 		endpoint: string,
 		options: RequestInit = {}
@@ -38,6 +45,7 @@ class ApiClient {
 			...options,
 			headers: {
 				'Content-Type': 'application/json',
+				...this.getAuthHeaders(),
 				...options.headers,
 			},
 		};
@@ -123,7 +131,7 @@ class ApiClient {
 
 			xhr.open('PUT', uploadUrl);
 			xhr.setRequestHeader('Content-Type', file.type);
-			xhr.timeout = 600000; // 10 минут для загрузки больших файлов
+			xhr.timeout = 600000;
 			xhr.send(file);
 		});
 	}
@@ -195,6 +203,29 @@ class ApiClient {
 		};
 
 		await poll();
+	}
+
+	async sendMagicLink(request: SendMagicLinkRequest): Promise<AuthResponse> {
+		return this.request<AuthResponse>('/api/uniframe/auth/send_magic_link', {
+			method: 'POST',
+			body: JSON.stringify(request),
+		});
+	}
+
+	async verifyToken(request: VerifyTokenRequest): Promise<AuthResponse> {
+		return this.request<AuthResponse>('/api/uniframe/auth/verify_token', {
+			method: 'POST',
+			body: JSON.stringify(request),
+		});
+	}
+
+	async checkSession(token?: string): Promise<SessionCheckResponse> {
+		const headers: Record<string, string> = token ? { 'Authorization': `Bearer ${token}` } : {};
+
+		return this.request<SessionCheckResponse>('/api/uniframe/auth/check_session', {
+			method: 'GET',
+			headers
+		});
 	}
 }
 

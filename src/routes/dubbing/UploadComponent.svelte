@@ -2,6 +2,8 @@
 	import { dubbingActions } from '$lib/stores/dubbing';
 	import { validateVideoFile } from '$lib/utils/validation';
 	import { apiClient } from '$lib/api/client';
+	import { auth } from '$lib/stores/auth';
+	import { goto } from '$app/navigation';
 
 	let isDragOver = false;
 	let fileInput: HTMLInputElement;
@@ -44,6 +46,11 @@
 	}
 
 	async function handleFile(file: File) {
+		if (!$auth.isAuthenticated) {
+			await goto('/auth/login');
+			return;
+		}
+
 		uploadError = '';
 
 		const validation = validateVideoFile(file);

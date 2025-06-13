@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import DropdownMenu from '$lib/utils/DropdownMenu.svelte';
 
 	let leftHovered = false;
 	let rightHovered = false;
@@ -39,14 +40,8 @@
 				</h1>
 			</div>
 
-			<!-- Кнопка меню справа -->
-			<button class="flex items-center justify-center p-2 hover:bg-white/10 rounded-lg transition-colors duration-200">
-				<img
-					src="/menu-icon.png"
-					alt="Menu"
-					class="h-12 w-12"
-				/>
-			</button>
+			<!-- Пустое место для кнопки (чтобы layout не сломался) -->
+			<div class="w-16 h-16"></div>
 		</header>
 
 		<!-- Разделитель Header -->
@@ -166,6 +161,11 @@
 			</p>
 		</footer>
 	</div>
+
+	<div class="absolute right-6 z-50" style="top: 2rem; right: 1.5rem;">
+		<DropdownMenu />
+	</div>
+
 </div>
 
 <style>

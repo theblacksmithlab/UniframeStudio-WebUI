@@ -80,3 +80,23 @@ export const OPENAI_VOICES = [
 	{ id: 'nova', name: 'Nova' },
 	{ id: 'shimmer', name: 'Shimmer' }
 ] as const;
+
+export interface SendMagicLinkRequest {
+	email: string;
+}
+
+export interface VerifyTokenRequest {
+	token: string;
+}
+
+export interface AuthResponse {
+	success: boolean;
+	message: string;
+	session_token?: string;
+}
+
+export interface SessionCheckResponse {
+	valid: boolean;
+	user_email: string;
+	expires_at: number;
+}

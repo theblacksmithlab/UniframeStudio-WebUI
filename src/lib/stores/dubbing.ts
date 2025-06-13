@@ -47,7 +47,7 @@ export const dubbingActions = {
 			jobId,
 			// Defaults
 			ttsProvider: 'openai',
-			ttsVoice: 'alloy'
+			ttsVoice: 'onyx'
 		}));
 	},
 
