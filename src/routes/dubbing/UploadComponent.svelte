@@ -60,7 +60,7 @@
 		}
 
 		try {
-			dubbingActions.startUpload();
+			dubbingActions.startUpload(file.name);
 
 			const prepareResponse = await apiClient.prepareUpload({
 				filename: generateSafeFilename(file.name),
@@ -77,7 +77,6 @@
 
 			dubbingActions.uploadComplete(
 				prepareResponse.video_s3_url,
-				prepareResponse.pipeline_id,
 				prepareResponse.job_id
 			);
 

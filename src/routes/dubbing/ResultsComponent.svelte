@@ -222,8 +222,8 @@
 					<span class="text-white font-medium">{config.ttsVoice || 'Unknown'}</span>
 				</div>
 				<div class="flex justify-between items-center py-2 border-b border-white/10">
-					<span class="text-white/60">Pipeline ID:</span>
-					<span class="text-white font-mono text-xs">{config.pipelineId || 'Unknown'}</span>
+					<span class="text-white/60">Job ID:</span>
+					<span class="text-white font-mono text-xs">{config.jobId || 'Unknown'}</span>
 				</div>
 				<div class="flex justify-between items-center py-2">
 					<span class="text-white/60">Status:</span>

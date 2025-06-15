@@ -8,21 +8,10 @@
 	$: progress = pipelineStatus?.progress_percentage || 0;
 	$: currentStepDescription = pipelineStatus?.step_description || 'Initializing system components...';
 
+	$: currentStage = pipelineStatus?.stage || 'preparation';
+
 	$: pythonSteps = pipelineStatus?.processing_steps || [];
-
-	$: isRustStage = currentStepDescription.includes('retrieving') ||
-		currentStepDescription.includes('generating') ||
-		currentStepDescription.includes('pipeline_completed');
-
-	$: currentPythonStepIndex = pythonSteps.findIndex(step => step === currentStepDescription);
-
-	$: estimatedStepIndex = isRustStage ? pythonSteps.length :
-		currentPythonStepIndex >= 0 ? currentPythonStepIndex :
-			Math.floor((progress / 100) * pythonSteps.length);
-
-	$: displaySteps = [...pythonSteps, "Finalizing results..."];
-
-	$: currentDisplayIndex = isRustStage ? displaySteps.length - 1 : estimatedStepIndex;
+	$: currentPythonStepIndex = pipelineStatus?.current_step_index ?? -1;
 
 	let elapsedTime = 0;
 	let timeInterval: ReturnType<typeof setInterval>;
@@ -37,7 +26,7 @@
 			elapsedTime = Math.floor((Date.now() - startTime) / 1000);
 		}, 1000);
 
-		if (config.pipelineId) {
+		if (config.jobId) {
 			startPolling();
 		}
 	});
@@ -49,10 +38,10 @@
 	});
 
 	function startPolling() {
-		if (!config.pipelineId) return;
+		if (!config.jobId) return;
 
 		apiClient.pollPipelineStatus(
-			config.pipelineId,
+			config.jobId,
 			(newStatus) => {
 				dubbingActions.updateStatus(newStatus);
 			},
@@ -124,70 +113,114 @@
 			<div class="text-center">
 				<p class="text-lg font-medium text-white mb-1">{currentStepDescription}</p>
 				<p class="text-white/60 text-sm">
-					Step {Math.max(1, currentDisplayIndex + 1)} of {displaySteps.length} • Elapsed: {formatTime(elapsedTime)}
+					Elapsed: {formatTime(elapsedTime)}
 				</p>
 			</div>
 		</div>
 
-		<!-- Список этапов -->
-		<div class="space-y-3">
-			<h4 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-				<svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-				</svg>
-				Processing Steps
-			</h4>
+		<!-- Визуализация этапов -->
+		<div class="space-y-6">
+			<!-- Этап 1: Подготовка (Rust) -->
+			<div class="space-y-3">
+				<h4 class="text-lg font-semibold text-white mb-2 flex items-center gap-2">
+					<svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+					</svg>
+					System Preparation
+				</h4>
 
-			<div class="grid gap-2 max-h-80 overflow-y-auto">
-				{#each displaySteps as step, index (step)}
-					<div
-						class="flex items-center gap-3 p-3 rounded-lg transition-all duration-300"
-						class:bg-blue-500-20={index === currentDisplayIndex}
-					class:bg-green-500-20={index < currentDisplayIndex}
-					class:bg-white-5={index > currentDisplayIndex}
-					>
-					<!-- Иконка статуса -->
-					<div class="flex-shrink-0">
-						{#if index < currentDisplayIndex}
-							<!-- Завершено -->
-							<div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-								<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-								</svg>
+				<div class={`p-4 rounded-lg border transition-all duration-300 ${
+					currentStage === 'preparation'
+						? 'bg-blue-500/20 border-blue-400/50'
+						: currentStage === 'processing' || currentStage === 'finalization'
+							? 'bg-green-500/10 border-green-400/30'
+							: 'bg-white/5 border-white/20'
+				}`}>
+					{#if currentStage === 'preparation'}
+						<div class="flex items-center gap-3">
+							<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-400"></div>
+							<span class="text-white">{currentStepDescription}</span>
+						</div>
+					{:else}
+						<div class="flex items-center gap-3">
+							<svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+							</svg>
+							<span class="text-white/70">Environment prepared successfully</span>
+						</div>
+					{/if}
+				</div>
+			</div>
+
+			<!-- Этап 2: Обработка (Python) -->
+			<div class="space-y-3">
+				<h4 class="text-lg font-semibold text-white mb-2 flex items-center gap-2">
+					<svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+					</svg>
+					Video Processing
+				</h4>
+
+				{#if pythonSteps.length > 0}
+					<div class="space-y-2">
+						{#each pythonSteps as step, index (step)}
+							<div class={`p-3 rounded-lg border transition-all duration-300 ${
+								currentStage === 'processing' && currentPythonStepIndex === index
+									? 'bg-purple-500/20 border-purple-400/50'
+									: currentStage === 'processing' && index < currentPythonStepIndex || currentStage === 'finalization'
+										? 'bg-green-500/10 border-green-400/30'
+										: 'bg-white/5 border-white/20'
+							}`}>
+								<div class="flex items-center gap-3">
+									{#if currentStage === 'processing' && currentPythonStepIndex === index}
+										<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-400"></div>
+									{:else if (currentStage === 'processing' && index < currentPythonStepIndex) || currentStage === 'finalization'}
+										<svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+										</svg>
+									{:else}
+										<div class="w-4 h-4 rounded-full bg-white/20"></div>
+									{/if}
+									<span class={`${
+										currentStage === 'processing' && currentPythonStepIndex === index
+											? 'text-white font-medium'
+											: 'text-white/70'
+									}`}>{step}</span>
+								</div>
 							</div>
-						{:else if index === currentDisplayIndex}
-							<!-- Текущий -->
-							<div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center animate-pulse">
-								<div class="w-2 h-2 bg-white rounded-full"></div>
-							</div>
-						{:else}
-							<!-- Ожидание -->
-							<div class="w-6 h-6 bg-white/20 rounded-full border border-white/30"></div>
-						{/if}
+						{/each}
 					</div>
+				{:else if currentStage === 'preparation'}
+					<div class="p-4 bg-white/5 rounded-lg border border-white/20 text-center text-white/50">
+						Processing steps will appear here once video analysis begins
+					</div>
+				{/if}
+			</div>
 
-					<!-- Текст этапа -->
-					<div class="flex-1 min-w-0">
-						<p
-							class="font-medium transition-colors duration-300"
-							class:text-white={index <= currentDisplayIndex}
-							class:text-white-60={index > currentDisplayIndex}
-						>
-						{step}
-						</p>
-						{#if index === displaySteps.length - 1 && isRustStage}
-							<p class="text-sm text-white/70">
-								{currentStepDescription}
-							</p>
-						{/if}
-					</div>
+			<!-- Этап 3: Финализация (Rust) -->
+			<div class="space-y-3">
+				<h4 class="text-lg font-semibold text-white mb-2 flex items-center gap-2">
+					<svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+					</svg>
+					Finalizing Results
+				</h4>
 
-					<!-- Номер этапа -->
-					<div class="text-white/40 text-sm font-mono">
-						{index + 1}/{displaySteps.length}
-					</div>
-					</div>
-				{/each}
+				<div class={`p-4 rounded-lg border transition-all duration-300 ${
+					currentStage === 'finalization'
+						? 'bg-emerald-500/20 border-emerald-400/50'
+						: 'bg-white/5 border-white/20'
+				}`}>
+					{#if currentStage === 'finalization'}
+						<div class="flex items-center gap-3">
+							<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-emerald-400"></div>
+							<span class="text-white">{currentStepDescription}</span>
+						</div>
+					{:else}
+						<span class="text-white/50">Waiting for processing to complete</span>
+					{/if}
+				</div>
 			</div>
 		</div>
 
@@ -201,10 +234,6 @@
 			<h4 class="text-lg font-semibold text-white mb-4">Processing Information</h4>
 			<div class="space-y-2 text-sm">
 				<div class="flex justify-between">
-					<span class="text-white/60">Pipeline ID:</span>
-					<span class="text-white font-mono">{config.pipelineId}</span>
-				</div>
-				<div class="flex justify-between">
 					<span class="text-white/60">Job ID:</span>
 					<span class="text-white font-mono">{config.jobId}</span>
 				</div>
@@ -213,8 +242,8 @@
 					<span class="text-white">{pipelineStatus?.created_at ? new Date(pipelineStatus.created_at).toLocaleTimeString() : 'Unknown'}</span>
 				</div>
 				<div class="flex justify-between">
-					<span class="text-white/60">Status:</span>
-					<span class="text-green-400">{pipelineStatus?.status || 'processing'}</span>
+					<span class="text-white/60">Stage:</span>
+					<span class="text-white capitalize">{currentStage}</span>
 				</div>
 			</div>
 		</div>
@@ -224,7 +253,7 @@
 			<h4 class="text-lg font-semibold text-white mb-4">Actions</h4>
 			<div class="space-y-4">
 				<p class="text-white/70 text-sm">
-					Processing cannot be stopped once started. You can go to the main page, but it will continue in the background.
+					Processing cannot be stopped once started. You can leave this page, and the process will continue in the background.
 				</p>
 				<button
 					on:click={handleCancel}

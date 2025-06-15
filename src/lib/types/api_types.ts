@@ -1,5 +1,16 @@
+export interface DubbingPipelinePrepareRequest {
+	filename: string;
+	content_type: string;
+}
+
+export interface DubbingPipelinePrepareResponse {
+	job_id: string;
+	upload_url: string;
+	video_s3_url: string;
+	expires_in: number;
+}
+
 export interface DubbingPipelineRequest {
-	pipeline_id: string;
 	job_id: string;
 	video_url: string;
 	target_language: string;
@@ -9,37 +20,28 @@ export interface DubbingPipelineRequest {
 }
 
 export interface DubbingPipelineResponse {
-	pipeline_id: string;
 	job_id: string;
 	status: string;
 	created_at: string;
 }
 
 export interface DubbingPipelineStatus {
-	pipeline_id: string;
 	job_id: string;
 	status: string;
-	step_description: string;
 	progress_percentage?: number;
+
+	stage: 'preparation' | 'processing' | 'finalization';
+	step_executor: 'rust' | 'python';
+	step_description: string;
+
+	current_step_index?: number;
+	processing_steps?: string[];
+
+	error_message?: string;
+	result_urls?: Record<string, string>;
 	created_at: string;
 	updated_at: string;
 	completed_at?: string;
-	result_urls?: Record<string, string>;
-	error_message?: string;
-	processing_steps?: string[];
-}
-
-export interface PrepareUploadRequest {
-	filename: string;
-	content_type: string;
-}
-
-export interface PrepareUploadResponse {
-	pipeline_id: string;
-	job_id: string;
-	upload_url: string;
-	video_s3_url: string;
-	expires_in: number;
 }
 
 export interface ApiError {

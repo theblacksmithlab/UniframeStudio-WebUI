@@ -2,13 +2,14 @@
 	import { dubbing, dubbingActions } from '$lib/stores/dubbing';
 
 	$: progress = $dubbing.uploadProgress || 0;
-	$: videoUrl = $dubbing.videoS3Url || '';
+	$: fileName = $dubbing.originalFileName || 'video file';
+	// $: videoUrl = $dubbing.videoS3Url || '';
 
 	function handleCancel() {
 		dubbingActions.reset();
 	}
 
-	$: fileName = videoUrl ? videoUrl.split('/').pop() || 'video file' : 'video file';
+	// $: fileName = videoUrl ? videoUrl.split('/').pop() || 'video file' : 'video file';
 
 	$: uploadStatus = progress === 0
 		? 'Preparing upload...'

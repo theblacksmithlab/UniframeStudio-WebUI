@@ -6,9 +6,10 @@ export type DubbingStage = 'idle' | 'uploading' | 'configuring' | 'processing' |
 export interface DubbingData {
 	stage: DubbingStage;
 
+	originalFileName?: string;
+
 	uploadProgress?: number;
 	videoS3Url?: string;
-	pipelineId?: string;
 	jobId?: string;
 
 	targetLanguage?: string;
@@ -30,20 +31,19 @@ export const dubbingActions = {
 		dubbing.set({ stage: 'idle' });
 	},
 
-	startUpload() {
-		dubbing.update(state => ({ ...state, stage: 'uploading', uploadProgress: 0 }));
+	startUpload(originalFileName: string) {
+		dubbing.update(state => ({ ...state, stage: 'uploading', uploadProgress: 0, originalFileName }));
 	},
 
 	setUploadProgress(progress: number) {
 		dubbing.update(state => ({ ...state, uploadProgress: progress }));
 	},
 
-	uploadComplete(videoS3Url: string, pipelineId: string, jobId: string) {
+	uploadComplete(videoS3Url: string, jobId: string) {
 		dubbing.update(state => ({
 			...state,
 			stage: 'configuring',
 			videoS3Url,
-			pipelineId,
 			jobId,
 			// Defaults
 			ttsProvider: 'openai',
@@ -55,8 +55,8 @@ export const dubbingActions = {
 		dubbing.update(state => ({ ...state, ...config }));
 	},
 
-	startProcessing(pipelineId: string, status: DubbingPipelineStatus) {
-		dubbing.update(state => ({ ...state, stage: 'processing', pipelineId, processingStatus: status }));
+	startProcessing(jobId: string, status: DubbingPipelineStatus) {
+		dubbing.update(state => ({ ...state, stage: 'processing', jobId, processingStatus: status }));
 	},
 
 	updateStatus(status: DubbingPipelineStatus) {

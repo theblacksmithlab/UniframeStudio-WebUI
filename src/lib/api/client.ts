@@ -1,6 +1,6 @@
 import type {
-	PrepareUploadRequest,
-	PrepareUploadResponse,
+	DubbingPipelinePrepareRequest,
+	DubbingPipelinePrepareResponse,
 	DubbingPipelineRequest,
 	DubbingPipelineResponse,
 	DubbingPipelineStatus,
@@ -8,7 +8,7 @@ import type {
 } from '$lib/types/api_types';
 
 const API_BASE_URL = 'https://api.blacksmith-lab.com';
-const API_TIMEOUT = 30000; // 30 secs
+const API_TIMEOUT = 30000;
 
 export class ApiClientError extends Error {
 	constructor(
@@ -90,9 +90,9 @@ class ApiClient {
 		}
 	}
 
-	async prepareUpload(request: PrepareUploadRequest): Promise<PrepareUploadResponse> {
+	async prepareUpload(request: DubbingPipelinePrepareRequest): Promise<DubbingPipelinePrepareResponse> {
 		console.log('prepareUpload: ', request);
-		return this.request<PrepareUploadResponse>('/api/uniframe/dubbing/prepare', {
+		return this.request<DubbingPipelinePrepareResponse>('/api/uniframe/dubbing/prepare', {
 			method: 'POST',
 			body: JSON.stringify(request),
 		});
@@ -144,12 +144,12 @@ class ApiClient {
 		});
 	}
 	
-	async getPipelineStatus(pipelineId: string): Promise<DubbingPipelineStatus> {
-		return this.request<DubbingPipelineStatus>(`/api/uniframe/dubbing/${pipelineId}/status`);
+	async getPipelineStatus(jobId: string): Promise<DubbingPipelineStatus> {
+		return this.request<DubbingPipelineStatus>(`/api/uniframe/dubbing/${jobId}/status`);
 	}
 
 	async pollPipelineStatus(
-		pipelineId: string,
+		jobId: string,
 		onUpdate: (status: DubbingPipelineStatus) => void,
 		onComplete: (status: DubbingPipelineStatus) => void,
 		onError: (error: string) => void
@@ -168,7 +168,7 @@ class ApiClient {
 			}
 
 			try {
-				const status = await this.getPipelineStatus(pipelineId);
+				const status = await this.getPipelineStatus(jobId);
 				consecutiveErrors = 0;
 				onUpdate(status);
 

@@ -65,7 +65,7 @@
 			return;
 		}
 
-		if (!config.videoS3Url || !config.pipelineId || !config.jobId) {
+		if (!config.videoS3Url || !config.jobId) {
 			configError = 'Missing upload data. Please upload video again.';
 			return;
 		}
@@ -74,7 +74,6 @@
 			isStarting = true;
 
 			const response = await apiClient.startPipeline({
-				pipeline_id: config.pipelineId!,
 				job_id: config.jobId!,
 				video_url: config.videoS3Url,
 				target_language: config.targetLanguage!,
@@ -83,8 +82,7 @@
 				source_language: config.sourceLanguage,
 			});
 
-			dubbingActions.startProcessing(response.pipeline_id, {
-				pipeline_id: response.pipeline_id,
+			dubbingActions.startProcessing(response.job_id, {
 				job_id: response.job_id,
 				status: response.status,
 				step_description: 'Initializing system components...',
