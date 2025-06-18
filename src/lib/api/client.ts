@@ -4,7 +4,8 @@ import type {
 	DubbingPipelineRequest,
 	DubbingPipelineResponse,
 	DubbingPipelineStatus,
-	ApiError as ApiErrorType, SendMagicLinkRequest, AuthResponse, VerifyTokenRequest, SessionCheckResponse
+	ApiError as ApiErrorType, SendMagicLinkRequest, AuthResponse, VerifyTokenRequest,
+	SessionCheckResponse, UserJob
 } from '$lib/types/api_types';
 
 const API_BASE_URL = 'https://api.blacksmith-lab.com';
@@ -22,6 +23,8 @@ export class ApiClientError extends Error {
 }
 
 class ApiClient {
+	private pollingTimeouts = new Map<string, NodeJS.Timeout>();
+
 	private readonly baseUrl: string;
 
 	constructor(baseUrl: string = API_BASE_URL) {
@@ -136,7 +139,6 @@ class ApiClient {
 		});
 	}
 
-
 	async startPipeline(request: DubbingPipelineRequest): Promise<DubbingPipelineResponse> {
 		return this.request<DubbingPipelineResponse>('/api/uniframe/dubbing/start', {
 			method: 'POST',
@@ -153,15 +155,18 @@ class ApiClient {
 		onUpdate: (status: DubbingPipelineStatus) => void,
 		onComplete: (status: DubbingPipelineStatus) => void,
 		onError: (error: string) => void
-	): Promise<void> {
+	): Promise<() => void> {
 		const pollInterval = 3000;
 		let consecutiveErrors = 0;
 		const maxConsecutiveErrors = 10;
+		let isPolling = true;
 
 		const startTime = Date.now();
 		const maxDuration = 24 * 60 * 60 * 1000;
 
 		const poll = async () => {
+			if (!isPolling) return
+
 			if (Date.now() - startTime > maxDuration) {
 				onError('Pipeline timeout - maximum duration exceeded (24 hours)');
 				return;
@@ -182,7 +187,8 @@ class ApiClient {
 					return;
 				}
 
-				setTimeout(poll, pollInterval);
+				const timeoutId = setTimeout(poll, pollInterval);
+				this.pollingTimeouts.set(jobId, timeoutId)
 
 			} catch (error) {
 				consecutiveErrors++;
@@ -198,11 +204,21 @@ class ApiClient {
 
 				console.warn(`Pipeline status check failed (${consecutiveErrors}/${maxConsecutiveErrors}):`, error);
 				const errorInterval = Math.min(pollInterval * consecutiveErrors, 30000); // 3s, 6s, 9s... до 30s
-				setTimeout(poll, errorInterval);
+				const timeoutId = setTimeout(poll, errorInterval);
+				this.pollingTimeouts.set(jobId, timeoutId);
 			}
 		};
 
 		await poll();
+
+		return () => {
+			isPolling = false;
+			const timeoutId = this.pollingTimeouts.get(jobId);
+			if (timeoutId) {
+				clearTimeout(timeoutId);
+				this.pollingTimeouts.delete(jobId);
+			}
+		};
 	}
 
 	async sendMagicLink(request: SendMagicLinkRequest): Promise<AuthResponse> {
@@ -225,6 +241,12 @@ class ApiClient {
 		return this.request<SessionCheckResponse>('/api/uniframe/auth/check_session', {
 			method: 'GET',
 			headers
+		});
+	}
+
+	async getUserJobs(): Promise<UserJob[]> {
+		return this.request<UserJob[]>('/api/uniframe/user/jobs', {
+			method: 'GET'
 		});
 	}
 }

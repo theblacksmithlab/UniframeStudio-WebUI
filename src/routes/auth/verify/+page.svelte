@@ -30,19 +30,27 @@
 			const response = await apiClient.verifyToken({ token });
 
 			if (response.success && response.session_token) {
-				// Извлекаем email из сообщения
-				const emailMatch = response.message.match(/for user: (.+)$/);
-				const userEmail = emailMatch ? emailMatch[1] : '';
+				localStorage.setItem('session_token', response.session_token);
 
-				// Сохраняем сессию
-				auth.setSession(response.session_token, userEmail);
+				try {
+					const sessionData = await apiClient.checkSession();
 
-				success = true;
+					auth.setSession(response.session_token, sessionData.user_email);
 
-				// Редирект через 2 секунды
-				setTimeout(() => {
-					goto('/dubbing');
-				}, 2000);
+					success = true;
+
+					setTimeout(() => {
+						goto('/dubbing');
+					}, 2000);
+				} catch (sessionError) {
+					console.error('Failed to get session data:', sessionError);
+					auth.setSession(response.session_token, '');
+					success = true;
+
+					setTimeout(() => {
+						goto('/dubbing');
+					}, 2000);
+				}
 
 			} else {
 				error = response.message || 'Verification failed';
@@ -196,7 +204,7 @@
 										Common issues:
 									</p>
 									<ul class="text-amber-200/80 text-sm mt-1 space-y-1">
-										<li>• The link may have expired (valid for 15 minutes)</li>
+										<li>• The link may have expired (valid for 1 hour)</li>
 										<li>• The link can only be used once</li>
 										<li>• Make sure you're opening the full link from your email</li>
 									</ul>

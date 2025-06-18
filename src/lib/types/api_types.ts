@@ -1,5 +1,6 @@
 export interface DubbingPipelinePrepareRequest {
-	filename: string;
+	system_file_name: string;
+	original_file_name: string;
 	content_type: string;
 }
 
@@ -17,6 +18,7 @@ export interface DubbingPipelineRequest {
 	tts_provider: string;
 	tts_voice: string;
 	source_language?: string;
+	transcription_keywords?: string;
 }
 
 export interface DubbingPipelineResponse {
@@ -31,7 +33,6 @@ export interface DubbingPipelineStatus {
 	progress_percentage?: number;
 
 	stage: 'preparation' | 'processing' | 'finalization';
-	step_executor: 'rust' | 'python';
 	step_description: string;
 
 	current_step_index?: number;
@@ -42,6 +43,8 @@ export interface DubbingPipelineStatus {
 	created_at: string;
 	updated_at: string;
 	completed_at?: string;
+
+	original_file_name?: string;
 }
 
 export interface ApiError {
@@ -100,5 +103,12 @@ export interface AuthResponse {
 export interface SessionCheckResponse {
 	valid: boolean;
 	user_email: string;
-	expires_at: number;
+	// expires_at: number;
+}
+
+export interface UserJob {
+	job_id: string;
+	original_file_name: string;
+	status: string;
+	created_at: string;
 }

@@ -17,31 +17,43 @@ const createAuthStore = () => {
 		loading: true
 	});
 
+	let initPromise: Promise<void> | null = null;
+
 	return {
 		subscribe,
 
 		init: async () => {
-			if (!browser) return;
+			if (initPromise) return initPromise;
 
-			const token = localStorage.getItem('session_token');
-			if (!token) {
-				set({ isAuthenticated: false, sessionToken: null, userEmail: null, loading: false });
-				return;
-			}
+			initPromise = (async () => {
+				if (!browser) {
+					set({ isAuthenticated: false, sessionToken: null, userEmail: null, loading: false });
+					return;
+				}
 
-			try {
-				const response = await apiClient.checkSession(token);
+				const token = localStorage.getItem('session_token');
+				if (!token) {
+					set({ isAuthenticated: false, sessionToken: null, userEmail: null, loading: false });
+					return;
+				}
 
-				set({
-					isAuthenticated: response.valid,
-					sessionToken: token,
-					userEmail: response.user_email,
-					loading: false
-				});
-			} catch (error) {
-				console.error('Auth check failed:', error);
-				set({ isAuthenticated: false, sessionToken: null, userEmail: null, loading: false });
-			}
+				try {
+					const response = await apiClient.checkSession(token);
+
+					set({
+						isAuthenticated: response.valid,
+						sessionToken: token,
+						userEmail: response.user_email,
+						loading: false
+					});
+				} catch (error) {
+					console.error('Auth check failed:', error);
+					localStorage.removeItem('session_token');
+					set({ isAuthenticated: false, sessionToken: null, userEmail: null, loading: false });
+				}
+			})();
+
+			return initPromise;
 		},
 
 		setSession: (token: string, email: string) => {
@@ -60,6 +72,7 @@ const createAuthStore = () => {
 				localStorage.removeItem('session_token');
 			}
 			set({ isAuthenticated: false, sessionToken: null, userEmail: null, loading: false });
+			initPromise = null;
 		}
 	};
 };

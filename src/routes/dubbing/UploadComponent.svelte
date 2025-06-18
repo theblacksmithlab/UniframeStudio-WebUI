@@ -63,7 +63,8 @@
 			dubbingActions.startUpload(file.name);
 
 			const prepareResponse = await apiClient.prepareUpload({
-				filename: generateSafeFilename(file.name),
+				system_file_name: generateSafeFilename(file.name),
+				original_file_name: file.name,
 				content_type: file.type
 			});
 
@@ -97,7 +98,7 @@
 		}
 	}
 </script>
-
+<div class="absolute inset-0 bg-black/20"></div>
 <!-- Upload зона -->
 <div class="text-center">
 	<!-- Заголовок -->

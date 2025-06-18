@@ -2,8 +2,10 @@
 	import { goto } from '$app/navigation';
 	import { auth } from '$lib/stores/auth';
 	import { onMount } from 'svelte';
+	import JobsModal from '../components/JobsModal.svelte';
 
 	let dropdownOpen = false;
+	let jobsModalOpen = false;
 
 	function handleClickOutside(event: MouseEvent) {
 		const target = event.target as HTMLElement;
@@ -31,6 +33,11 @@
 	function handleLogout() {
 		dropdownOpen = false;
 		auth.logout();
+	}
+
+	function handleMyJobs() {
+		dropdownOpen = false;
+		jobsModalOpen = true;
 	}
 </script>
 
@@ -81,6 +88,19 @@
 				</div>
 
 				<div class="p-2">
+					<!-- My Jobs -->
+					<button
+						class="w-full flex items-center gap-3 px-3 py-2 text-gray-300 hover:bg-white/10 hover:text-white rounded-md transition-colors duration-200 cursor-pointer"
+						on:click={handleMyJobs}
+					>
+						<!-- Иконка списка -->
+						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+						</svg>
+						<span>My Jobs</span>
+					</button>
+
+					<!-- Sign Out -->
 					<button
 						class="w-full flex items-center gap-3 px-3 py-2 text-gray-300 hover:bg-white/10 hover:text-white rounded-md transition-colors duration-200 cursor-pointer"
 						on:click={handleLogout}
@@ -110,3 +130,9 @@
 		</div>
 	{/if}
 </div>
+
+<!-- Jobs Modal -->
+<JobsModal
+	isOpen={jobsModalOpen}
+	onClose={() => jobsModalOpen = false}
+/>

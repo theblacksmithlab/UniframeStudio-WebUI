@@ -7,6 +7,7 @@ export interface DubbingData {
 	stage: DubbingStage;
 
 	originalFileName?: string;
+	filename?: string;
 
 	uploadProgress?: number;
 	videoS3Url?: string;
@@ -16,12 +17,14 @@ export interface DubbingData {
 	sourceLanguage?: string;
 	ttsProvider?: 'openai' | 'elevenlabs';
 	ttsVoice?: string;
+	transcriptionKeywords?: string;
 
 	processingStatus?: DubbingPipelineStatus;
 
 	resultUrls?: Record<string, string>;
 
 	error?: string;
+	isLoadedJob?: boolean;
 }
 
 export const dubbing = writable<DubbingData>({ stage: 'idle' });
@@ -51,7 +54,7 @@ export const dubbingActions = {
 		}));
 	},
 
-	updateConfig(config: Partial<Pick<DubbingData, 'targetLanguage' | 'sourceLanguage' | 'ttsProvider' | 'ttsVoice'>>) {
+	updateConfig(config: Partial<Pick<DubbingData, 'targetLanguage' | 'sourceLanguage' | 'ttsProvider' | 'ttsVoice' | 'transcriptionKeywords'>>) {
 		dubbing.update(state => ({ ...state, ...config }));
 	},
 
@@ -69,5 +72,20 @@ export const dubbingActions = {
 
 	setError(error: string) {
 		dubbing.update(state => ({ ...state, stage: 'error', error }));
+	},
+
+	loadExistingJob(jobData: DubbingPipelineStatus) {
+		dubbing.update(state => ({
+			...state,
+			jobId: jobData.job_id,
+			originalFileName: jobData.original_file_name || 'Unknown file',
+			stage: jobData.status === 'completed' ? 'completed' :
+				jobData.status === 'failed' ? 'error' :
+					'processing',
+			processingStatus: jobData,
+			resultUrls: jobData.result_urls || undefined,
+			error: jobData.error_message || undefined,
+			isLoadedJob: true
+		}));
 	}
 };

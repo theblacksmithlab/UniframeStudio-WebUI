@@ -2,6 +2,7 @@
 	import { onMount, onDestroy } from 'svelte';
 	import { dubbing, dubbingActions } from '$lib/stores/dubbing';
 	import { apiClient } from '$lib/api/client';
+	import { goto } from '$app/navigation';
 
 	$: config = $dubbing;
 	$: pipelineStatus = config.processingStatus;
@@ -16,6 +17,8 @@
 	let elapsedTime = 0;
 	let timeInterval: ReturnType<typeof setInterval>;
 	let startTime = Date.now();
+
+	let cancelPolling: (() => void) | null = null;
 
 	onMount(() => {
 		if (pipelineStatus?.created_at) {
@@ -35,12 +38,15 @@
 		if (timeInterval) {
 			clearInterval(timeInterval);
 		}
+		if (cancelPolling) {
+			cancelPolling();
+		}
 	});
 
-	function startPolling() {
+	async function startPolling() {
 		if (!config.jobId) return;
 
-		apiClient.pollPipelineStatus(
+		cancelPolling = await apiClient.pollPipelineStatus(
 			config.jobId,
 			(newStatus) => {
 				dubbingActions.updateStatus(newStatus);
@@ -70,7 +76,13 @@
 	}
 
 	function handleCancel() {
-		dubbingActions.setError('Processing cancelled by user');
+		if (cancelPolling) {
+			cancelPolling();
+		}
+
+		dubbingActions.reset();
+
+		goto('/');
 	}
 </script>
 
