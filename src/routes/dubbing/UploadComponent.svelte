@@ -2,6 +2,8 @@
 	import { dubbingActions } from '$lib/stores/dubbing';
 	import { validateVideoFile } from '$lib/utils/validation';
 	import { apiClient } from '$lib/api/client';
+	import { auth } from '$lib/stores/auth';
+	import { goto } from '$app/navigation';
 
 	let isDragOver = false;
 	let fileInput: HTMLInputElement;
@@ -44,6 +46,11 @@
 	}
 
 	async function handleFile(file: File) {
+		if (!$auth.isAuthenticated) {
+			await goto('/auth/login');
+			return;
+		}
+
 		uploadError = '';
 
 		const validation = validateVideoFile(file);
@@ -53,10 +60,11 @@
 		}
 
 		try {
-			dubbingActions.startUpload();
+			dubbingActions.startUpload(file.name);
 
 			const prepareResponse = await apiClient.prepareUpload({
-				filename: generateSafeFilename(file.name),
+				system_file_name: generateSafeFilename(file.name),
+				original_file_name: file.name,
 				content_type: file.type
 			});
 
@@ -70,7 +78,6 @@
 
 			dubbingActions.uploadComplete(
 				prepareResponse.video_s3_url,
-				prepareResponse.pipeline_id,
 				prepareResponse.job_id
 			);
 
@@ -91,7 +98,7 @@
 		}
 	}
 </script>
-
+<div class="absolute inset-0 bg-black/20"></div>
 <!-- Upload зона -->
 <div class="text-center">
 	<!-- Заголовок -->

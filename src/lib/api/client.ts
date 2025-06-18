@@ -1,14 +1,15 @@
 import type {
-	PrepareUploadRequest,
-	PrepareUploadResponse,
+	DubbingPipelinePrepareRequest,
+	DubbingPipelinePrepareResponse,
 	DubbingPipelineRequest,
 	DubbingPipelineResponse,
 	DubbingPipelineStatus,
-	ApiError as ApiErrorType
+	ApiError as ApiErrorType, SendMagicLinkRequest, AuthResponse, VerifyTokenRequest,
+	SessionCheckResponse, UserJob
 } from '$lib/types/api_types';
 
 const API_BASE_URL = 'https://api.blacksmith-lab.com';
-const API_TIMEOUT = 30000; // 30 secs
+const API_TIMEOUT = 30000;
 
 export class ApiClientError extends Error {
 	constructor(
@@ -22,10 +23,19 @@ export class ApiClientError extends Error {
 }
 
 class ApiClient {
+	private pollingTimeouts = new Map<string, NodeJS.Timeout>();
+
 	private readonly baseUrl: string;
 
 	constructor(baseUrl: string = API_BASE_URL) {
 		this.baseUrl = baseUrl;
+	}
+
+	private getAuthHeaders(): Record<string, string> {
+		if (typeof window === 'undefined') return {};
+
+		const token = localStorage.getItem('session_token');
+		return token ? { 'Authorization': `Bearer ${token}` } : {};
 	}
 
 	private async request<T>(
@@ -38,6 +48,7 @@ class ApiClient {
 			...options,
 			headers: {
 				'Content-Type': 'application/json',
+				...this.getAuthHeaders(),
 				...options.headers,
 			},
 		};
@@ -82,9 +93,9 @@ class ApiClient {
 		}
 	}
 
-	async prepareUpload(request: PrepareUploadRequest): Promise<PrepareUploadResponse> {
+	async prepareUpload(request: DubbingPipelinePrepareRequest): Promise<DubbingPipelinePrepareResponse> {
 		console.log('prepareUpload: ', request);
-		return this.request<PrepareUploadResponse>('/api/uniframe/dubbing/prepare', {
+		return this.request<DubbingPipelinePrepareResponse>('/api/uniframe/dubbing/prepare', {
 			method: 'POST',
 			body: JSON.stringify(request),
 		});
@@ -123,11 +134,10 @@ class ApiClient {
 
 			xhr.open('PUT', uploadUrl);
 			xhr.setRequestHeader('Content-Type', file.type);
-			xhr.timeout = 600000; // 10 минут для загрузки больших файлов
+			xhr.timeout = 600000;
 			xhr.send(file);
 		});
 	}
-
 
 	async startPipeline(request: DubbingPipelineRequest): Promise<DubbingPipelineResponse> {
 		return this.request<DubbingPipelineResponse>('/api/uniframe/dubbing/start', {
@@ -136,31 +146,34 @@ class ApiClient {
 		});
 	}
 	
-	async getPipelineStatus(pipelineId: string): Promise<DubbingPipelineStatus> {
-		return this.request<DubbingPipelineStatus>(`/api/uniframe/dubbing/${pipelineId}/status`);
+	async getPipelineStatus(jobId: string): Promise<DubbingPipelineStatus> {
+		return this.request<DubbingPipelineStatus>(`/api/uniframe/dubbing/${jobId}/status`);
 	}
 
 	async pollPipelineStatus(
-		pipelineId: string,
+		jobId: string,
 		onUpdate: (status: DubbingPipelineStatus) => void,
 		onComplete: (status: DubbingPipelineStatus) => void,
 		onError: (error: string) => void
-	): Promise<void> {
+	): Promise<() => void> {
 		const pollInterval = 3000;
 		let consecutiveErrors = 0;
 		const maxConsecutiveErrors = 10;
+		let isPolling = true;
 
 		const startTime = Date.now();
 		const maxDuration = 24 * 60 * 60 * 1000;
 
 		const poll = async () => {
+			if (!isPolling) return
+
 			if (Date.now() - startTime > maxDuration) {
 				onError('Pipeline timeout - maximum duration exceeded (24 hours)');
 				return;
 			}
 
 			try {
-				const status = await this.getPipelineStatus(pipelineId);
+				const status = await this.getPipelineStatus(jobId);
 				consecutiveErrors = 0;
 				onUpdate(status);
 
@@ -174,7 +187,8 @@ class ApiClient {
 					return;
 				}
 
-				setTimeout(poll, pollInterval);
+				const timeoutId = setTimeout(poll, pollInterval);
+				this.pollingTimeouts.set(jobId, timeoutId)
 
 			} catch (error) {
 				consecutiveErrors++;
@@ -190,11 +204,50 @@ class ApiClient {
 
 				console.warn(`Pipeline status check failed (${consecutiveErrors}/${maxConsecutiveErrors}):`, error);
 				const errorInterval = Math.min(pollInterval * consecutiveErrors, 30000); // 3s, 6s, 9s... до 30s
-				setTimeout(poll, errorInterval);
+				const timeoutId = setTimeout(poll, errorInterval);
+				this.pollingTimeouts.set(jobId, timeoutId);
 			}
 		};
 
 		await poll();
+
+		return () => {
+			isPolling = false;
+			const timeoutId = this.pollingTimeouts.get(jobId);
+			if (timeoutId) {
+				clearTimeout(timeoutId);
+				this.pollingTimeouts.delete(jobId);
+			}
+		};
+	}
+
+	async sendMagicLink(request: SendMagicLinkRequest): Promise<AuthResponse> {
+		return this.request<AuthResponse>('/api/uniframe/auth/send_magic_link', {
+			method: 'POST',
+			body: JSON.stringify(request),
+		});
+	}
+
+	async verifyToken(request: VerifyTokenRequest): Promise<AuthResponse> {
+		return this.request<AuthResponse>('/api/uniframe/auth/verify_token', {
+			method: 'POST',
+			body: JSON.stringify(request),
+		});
+	}
+
+	async checkSession(token?: string): Promise<SessionCheckResponse> {
+		const headers: Record<string, string> = token ? { 'Authorization': `Bearer ${token}` } : {};
+
+		return this.request<SessionCheckResponse>('/api/uniframe/auth/check_session', {
+			method: 'GET',
+			headers
+		});
+	}
+
+	async getUserJobs(): Promise<UserJob[]> {
+		return this.request<UserJob[]>('/api/uniframe/user/jobs', {
+			method: 'GET'
+		});
 	}
 }
 

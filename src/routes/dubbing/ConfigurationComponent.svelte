@@ -20,7 +20,8 @@
 	let sourceLanguage = '';
 	let targetLanguage = '';
 	let ttsProvider = 'openai';
-	let ttsVoice = 'alloy';
+	let ttsVoice = 'onyx';
+	let transcriptionKeywords = '';
 
 	let isStarting = false;
 	let configError = '';
@@ -51,6 +52,10 @@
 		dubbingActions.updateConfig({ ttsVoice: ttsVoice });
 	}
 
+	function handleTranscriptionKeywordsChange() {
+		dubbingActions.updateConfig({ transcriptionKeywords: transcriptionKeywords || undefined });
+	}
+
 	async function handleStartProcessing() {
 		configError = '';
 
@@ -65,7 +70,7 @@
 			return;
 		}
 
-		if (!config.videoS3Url || !config.pipelineId || !config.jobId) {
+		if (!config.videoS3Url || !config.jobId) {
 			configError = 'Missing upload data. Please upload video again.';
 			return;
 		}
@@ -74,19 +79,19 @@
 			isStarting = true;
 
 			const response = await apiClient.startPipeline({
-				pipeline_id: config.pipelineId!,
 				job_id: config.jobId!,
 				video_url: config.videoS3Url,
 				target_language: config.targetLanguage!,
 				tts_provider: config.ttsProvider!,
 				tts_voice: config.ttsVoice!,
 				source_language: config.sourceLanguage,
+				transcription_keywords: config.transcriptionKeywords,
 			});
 
-			dubbingActions.startProcessing(response.pipeline_id, {
-				pipeline_id: response.pipeline_id,
+			dubbingActions.startProcessing(response.job_id, {
 				job_id: response.job_id,
 				status: response.status,
+				stage: "preparation",
 				step_description: 'Initializing system components...',
 				created_at: response.created_at,
 				updated_at: response.created_at
@@ -227,8 +232,8 @@
 						/>
 						<p class="text-white/50 text-sm mt-1">Enter your custom ElevenLabs voice ID</p>
 					{/if}
+					<p class="text-white/50 text-sm mt-1">Choose voice for speech synthesis</p>
 				</div>
-				<p class="text-white/50 text-sm mt-1">Choose voice for speech synthesis</p>
 			</div>
 
 		</div>
@@ -241,6 +246,36 @@
 				</p>
 			</div>
 		{/if}
+
+		<!-- Широкое поле для ключевых слов -->
+		<div class="mt-8 pt-8 border-t border-white/20">
+			<h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+				<svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.99 1.99 0 013 12V7a4 4 0 014-4z" />
+				</svg>
+				Advanced Transcription Settings
+			</h3>
+
+			<div>
+				<label for="transcription-keywords" class="block text-white/80 font-medium mb-2">
+					Keywords for Better Recognition (optional)
+				</label>
+				<textarea
+					id="transcription-keywords"
+					bind:value={transcriptionKeywords}
+					on:input={handleTranscriptionKeywordsChange}
+					placeholder="Enter specific words from your video, separated by commas..."
+					rows="3"
+					class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
+				></textarea>
+				<p class="text-white/50 text-sm mt-1">
+					Add technical terms, names, or brand words to improve transcription accuracy
+				</p>
+				<div class="mt-2 text-xs text-green-400/80 bg-green-500/10 rounded-lg p-2 border border-green-500/20">
+					<strong>💡 Tip:</strong> Include proper nouns, technical jargon, or uncommon words that appear in your video (e.g., "TensorFlow, OpenAI, machine learning")
+				</div>
+			</div>
+		</div>
 
 		<!-- Кнопка запуска -->
 		<div class="mt-8 text-center">

@@ -1,45 +1,50 @@
+export interface DubbingPipelinePrepareRequest {
+	system_file_name: string;
+	original_file_name: string;
+	content_type: string;
+}
+
+export interface DubbingPipelinePrepareResponse {
+	job_id: string;
+	upload_url: string;
+	video_s3_url: string;
+	expires_in: number;
+}
+
 export interface DubbingPipelineRequest {
-	pipeline_id: string;
 	job_id: string;
 	video_url: string;
 	target_language: string;
 	tts_provider: string;
 	tts_voice: string;
 	source_language?: string;
+	transcription_keywords?: string;
 }
 
 export interface DubbingPipelineResponse {
-	pipeline_id: string;
 	job_id: string;
 	status: string;
 	created_at: string;
 }
 
 export interface DubbingPipelineStatus {
-	pipeline_id: string;
 	job_id: string;
 	status: string;
-	step_description: string;
 	progress_percentage?: number;
+
+	stage: 'preparation' | 'processing' | 'finalization';
+	step_description: string;
+
+	current_step_index?: number;
+	processing_steps?: string[];
+
+	error_message?: string;
+	result_urls?: Record<string, string>;
 	created_at: string;
 	updated_at: string;
 	completed_at?: string;
-	result_urls?: Record<string, string>;
-	error_message?: string;
-	processing_steps?: string[];
-}
 
-export interface PrepareUploadRequest {
-	filename: string;
-	content_type: string;
-}
-
-export interface PrepareUploadResponse {
-	pipeline_id: string;
-	job_id: string;
-	upload_url: string;
-	video_s3_url: string;
-	expires_in: number;
+	original_file_name?: string;
 }
 
 export interface ApiError {
@@ -80,3 +85,30 @@ export const OPENAI_VOICES = [
 	{ id: 'nova', name: 'Nova' },
 	{ id: 'shimmer', name: 'Shimmer' }
 ] as const;
+
+export interface SendMagicLinkRequest {
+	email: string;
+}
+
+export interface VerifyTokenRequest {
+	token: string;
+}
+
+export interface AuthResponse {
+	success: boolean;
+	message: string;
+	session_token?: string;
+}
+
+export interface SessionCheckResponse {
+	valid: boolean;
+	user_email: string;
+	// expires_at: number;
+}
+
+export interface UserJob {
+	job_id: string;
+	original_file_name: string;
+	status: string;
+	created_at: string;
+}

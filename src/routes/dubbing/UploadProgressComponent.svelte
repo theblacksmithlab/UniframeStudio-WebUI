@@ -2,13 +2,11 @@
 	import { dubbing, dubbingActions } from '$lib/stores/dubbing';
 
 	$: progress = $dubbing.uploadProgress || 0;
-	$: videoUrl = $dubbing.videoS3Url || '';
+	$: fileName = $dubbing.originalFileName || 'video file';
 
 	function handleCancel() {
 		dubbingActions.reset();
 	}
-
-	$: fileName = videoUrl ? videoUrl.split('/').pop() || 'video file' : 'video file';
 
 	$: uploadStatus = progress === 0
 		? 'Preparing upload...'
@@ -16,7 +14,7 @@
 			? 'Uploading to cloud storage...'
 			: 'Upload complete! Processing...';
 </script>
-
+<div class="absolute inset-0 bg-black/20"></div>
 <div class="text-center max-w-2xl mx-auto">
 	<!-- Заголовок -->
 	<div class="mb-8">
@@ -46,7 +44,7 @@
 				{fileName}
 			</h3>
 			<p class="text-white/60">
-				Video file • Processing...
+				Video file • Uploading...
 			</p>
 		</div>
 
