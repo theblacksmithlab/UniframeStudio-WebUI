@@ -20,11 +20,30 @@
 	const itLetters = ['I', 'T', '!'];
 	const syncLetters = ['S', 'Y', 'N', 'C'];
 
+	let logoFlickering = false;
+
 	onMount(() => {
 		setTimeout(() => {
 			isLoaded = true;
+			setTimeout(() => {
+				startAutoTyping();
+			}, 2000);
 		}, 500);
 	});
+
+	onMount(() => {
+		setTimeout(() => {
+			startLogoFlickering();
+		}, 1000);
+	});
+
+	function startLogoFlickering() {
+		logoFlickering = true;
+
+		setTimeout(() => {
+			logoFlickering = false;
+		}, 3000);
+	}
 
 	function handleDubClick() {
 		goto('/dubbing');
@@ -37,7 +56,15 @@
 		}, 5000);
 	}
 
-	function startTyping(isLeft: boolean) {
+	function startAutoTyping() {
+		startTypingText(true);
+
+		setTimeout(() => {
+			startTypingText(false);
+		}, 500);
+	}
+
+	function startTypingText(isLeft: boolean) {
 		const text = isLeft ? leftFullText : rightFullText;
 		const speed = 50;
 
@@ -71,55 +98,36 @@
 			}, speed);
 		}
 	}
-
-	function stopTyping(isLeft: boolean) {
-		if (isLeft) {
-			if (leftTypingInterval) {
-				clearInterval(leftTypingInterval);
-				leftTypingInterval = null;
-			}
-			leftTypedText = '';
-		} else {
-			if (rightTypingInterval) {
-				clearInterval(rightTypingInterval);
-				rightTypingInterval = null;
-			}
-			rightTypedText = '';
-		}
-	}
 </script>
 
 <svelte:head>
-	<title>Uniframe Studio - Smart Dubbing</title>
+	<title>Uniframe Studio</title>
 </svelte:head>
 
-<div class="min-h-screen flex flex-col bg-slate-900 bg-cover bg-center bg-no-repeat" style="background-image: url('/main-background.png');">
-	<!-- Полупрозрачный оверлей для читаемости текста -->
+<div class="min-h-screen flex flex-col bg-black bg-cover bg-center bg-no-repeat" style="background-image: url('/main-background.png');">
+	<!-- Page overlay -->
 	<div class="absolute inset-0 bg-black/20"></div>
 
-	<!-- Контент поверх фона -->
 	<div class="relative z-10 min-h-screen flex flex-col">
 		<!-- Header (10%) -->
-		<header class="h-[10vh] flex items-center justify-between bg-black/40 backdrop-blur-md px-12">
-			<div class="flex items-center gap-4">
-				<!-- Логотип -->
+		<header class="h-[10vh] flex items-center justify-between bg-black/40 backdrop-blur-md px-[3.3vh] relative z-50">
+			<!-- Left side (logo) -->
+			<div class="h-full flex items-center">
 				<img
 					src="/logo.png"
 					alt="Uniframe Studio Logo"
-					class="h-12 w-12"
-					style="filter: drop-shadow(0 0 10px rgba(64, 224, 255, 0.3)) drop-shadow(0 0 15px rgba(147, 51, 234, 0.3));"
+					class="h-1/3 object-contain logo-image"
+					class:flickering={logoFlickering}
 				/>
-				<!-- Название с кастомным шрифтом и увеличенными отступами между буквами -->
-<!--				<h1 class="text-2xl text-white" style="font-family: 'Limelight', sans-serif;">-->
-<!--					UNIFRAME STUDIO-->
-<!--				</h1>-->
 			</div>
 
-			<!-- Пустое место для кнопки (чтобы layout не сломался) -->
-			<div class="w-16 h-16"></div>
+			<!-- Right side (DropdownMenu) -->
+			<div class="h-[5vh] w-[5vh] flex items-center justify-center">
+				<DropdownMenu />
+			</div>
 		</header>
 
-		<!-- Разделитель Header -->
+		<!-- Divider -->
 		<div class="w-full h-px relative">
 			<div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
 		</div>
@@ -130,13 +138,11 @@
 			<div
 				class="w-1/2 relative cursor-pointer transition-all duration-300 ease-out"
 				on:mouseenter={() => {
-        leftHovered = true;
-        startTyping(true);
-    }}
+					leftHovered = true;
+				}}
 				on:mouseleave={() => {
-        leftHovered = false;
-        stopTyping(true);
-    }}
+					leftHovered = false;
+				}}
 				on:click={handleDubClick}
 				role="button"
 				tabindex="0"
@@ -145,27 +151,27 @@
 				<!-- Content -->
 				<div class="absolute inset-0 flex items-center justify-center">
 					<div
-						class="text-center transform transition-all duration-700 ease-out neural-text"
+						class="text-center neural-text"
 						class:loaded={isLoaded}
-						class:magnetic={leftHovered}
-						style="transform: scale({leftHovered ? 1.1 : 1});"
 					>
-						<div class="relative">
-							<h2 class="text-8xl font-black text-white mb-4 tracking-wider drop-shadow-2xl">
+						<div class="relative transform transition-all duration-700 ease-out"
+								 class:magnetic={leftHovered}
+								 style="transform: scale({leftHovered ? 1.1 : 1});">
+							<h2 class="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white mb-2 sm:mb-4 tracking-wider drop-shadow-2xl">
 								{#each dubLetters as letter, i (letter + i)}
 									<span
 										class="neural-letter blue-theme"
-										style="animation-delay: {[0.8, 0.2, 1.1][i]}s"
+										style="animation-delay: {Math.random() * 2 + 0.5}s"
 									>
 										{letter}
 									</span>
 								{/each}
 							</h2>
-							<h3 class="text-6xl font-black text-white tracking-wider drop-shadow-2xl">
+							<h3 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-wider drop-shadow-2xl">
 								{#each itLetters as letter, i (letter + i + 'it')}
 									<span
 										class="neural-letter blue-theme"
-										style="animation-delay: {[1.5, 0.4, 1.8][i]}s"
+										style="animation-delay: {Math.random() * 2 + 0.5}s"
 									>
 										{letter}
 									</span>
@@ -175,8 +181,8 @@
 
 						<div class="h-8 mt-6 flex items-center justify-center">
 							{#if leftTypedText}
-								<p class="text-xl text-white/90 font-medium drop-shadow-lg typing-text">
-									{leftTypedText}<span class="typing-cursor">|</span>
+								<p class="text-xs sm:text-sm md:text-base lg:text-xl text-white/90 font-medium drop-shadow-lg typing-text px-4 sm:px-2 md:px-0">
+									{leftTypedText}
 								</p>
 							{/if}
 						</div>
@@ -196,11 +202,9 @@
 				class="w-1/2 relative cursor-pointer transition-all duration-300 ease-out"
 				on:mouseenter={() => {
 					rightHovered = true;
-					startTyping(false);
 				}}
 				on:mouseleave={() => {
 					rightHovered = false;
-					stopTyping(false);
 				}}
 				on:click={handleSyncClick}
 				role="button"
@@ -210,27 +214,27 @@
 				<!-- Content -->
 				<div class="absolute inset-0 flex items-center justify-center">
 					<div
-						class="text-center transform transition-all duration-700 ease-out neural-text"
+						class="text-center neural-text"
 						class:loaded={isLoaded}
-						class:magnetic={rightHovered}
-						style="transform: scale({rightHovered ? 1.1 : 1});"
 					>
-						<div class="relative">
-							<h2 class="text-8xl font-black text-white mb-4 tracking-wider drop-shadow-2xl">
+						<div class="relative transform transition-all duration-700 ease-out"
+								 class:magnetic={rightHovered}
+								 style="transform: scale({rightHovered ? 1.1 : 1});">
+							<h2 class="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white mb-2 sm:mb-4 tracking-wider drop-shadow-2xl">
 								{#each syncLetters as letter, i (letter + i + 'sync')}
 									<span
 										class="neural-letter pink-theme"
-										style="animation-delay: {[1.2, 0.3, 1.6, 0.7][i]}s"
+										style="animation-delay: {Math.random() * 2 + 0.5}s"
 									>
 										{letter}
 									</span>
 								{/each}
 							</h2>
-							<h3 class="text-6xl font-black text-white tracking-wider drop-shadow-2xl">
+							<h3 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-wider drop-shadow-2xl">
 								{#each itLetters as letter, i (letter + i + 'sync-it')}
 									<span
 										class="neural-letter pink-theme"
-										style="animation-delay: {[0.9, 1.7, 0.5][i]}s"
+										style="animation-delay: {Math.random() * 2 + 0.5}s"
 									>
 										{letter}
 									</span>
@@ -240,8 +244,8 @@
 
 						<div class="h-8 mt-6 flex items-center justify-center">
 							{#if rightTypedText}
-								<p class="text-xl text-white/90 font-medium drop-shadow-lg typing-text">
-									{rightTypedText}<span class="typing-cursor">|</span>
+								<p class="text-xs sm:text-sm md:text-base lg:text-xl text-white/90 font-medium drop-shadow-lg typing-text px-4 sm:px-2 md:px-0">
+									{rightTypedText}
 								</p>
 							{/if}
 						</div>
@@ -257,24 +261,18 @@
 			</div>
 		</main>
 
-		<!-- Разделитель Footer -->
 		<div class="w-full h-px relative">
 			<div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
 		</div>
 
 		<!-- Footer (10%) -->
 		<footer class="h-[10vh] flex items-center justify-center bg-black/80 backdrop-blur-md">
-			<p class="text-gray-300 text-sm">
+			<p class="text-gray-500 text-xs sm:text-xs md:text-sm opacity-60 font-light">
 				© 2025 Uniframe Studio - AI Video Processing Platform
 			</p>
 		</footer>
 	</div>
 
-	<div class="absolute right-6 z-50" style="top: 2rem; right: 1.5rem;">
-		<DropdownMenu />
-	</div>
-
-	<!-- Красивое уведомление Coming Soon -->
 	{#if showComingSoon}
 		<div class="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
 			<div class="coming-soon-notification">
@@ -289,6 +287,8 @@
 	{/if}
 </div>
 
+<div id="modal-root"></div>
+
 <style>
     .neural-text {
         opacity: 0;
@@ -301,12 +301,6 @@
         transform: translateY(0);
     }
 
-    .neural-text.magnetic {
-        filter: brightness(1.1) saturate(1.2);
-        transform-origin: center;
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
     .neural-letter {
         display: inline-block;
         opacity: 0;
@@ -317,11 +311,9 @@
     @keyframes fadeInLetter {
         0% {
             opacity: 0;
-            transform: translateY(10px);
         }
         100% {
             opacity: 1;
-            transform: translateY(0);
         }
     }
 
@@ -344,7 +336,6 @@
         }
     }
 
-    /* Coming Soon Notification */
     .coming-soon-notification {
         background: rgba(0, 0, 0, 0.8);
         backdrop-filter: blur(20px);
@@ -366,22 +357,72 @@
         }
     }
 
-    /* Typing Effect */
     .typing-text {
         opacity: 1;
         animation: fadeInUp 0.3s ease-out forwards;
     }
 
-    .typing-cursor {
-        animation: blink 1s infinite;
+    .logo-image {
+        opacity: 0.8;
+        transition: filter 0.1s ease;
     }
 
-    @keyframes blink {
-        0%, 50% {
-            opacity: 1;
+    .logo-image.flickering {
+        animation: flickerLogo 3s ease-out forwards;
+    }
+
+    .logo-image:not(.flickering) {
+        filter: drop-shadow(0 0 10px rgba(64, 224, 255, 0.3)) drop-shadow(0 0 15px rgba(147, 51, 234, 0.3));
+    }
+
+    @keyframes flickerLogo {
+        0% {
+            filter: none;
         }
-        51%, 100% {
-            opacity: 0;
+        5% {
+            filter: drop-shadow(0 0 5px rgba(64, 224, 255, 0.1));
+        }
+        10% {
+            filter: none;
+        }
+        15% {
+            filter: drop-shadow(0 0 8px rgba(64, 224, 255, 0.2)) drop-shadow(0 0 10px rgba(147, 51, 234, 0.2));
+        }
+        20% {
+            filter: none;
+        }
+        25% {
+            filter: drop-shadow(0 0 3px rgba(64, 224, 255, 0.1));
+        }
+        30% {
+            filter: none;
+        }
+        40% {
+            filter: drop-shadow(0 0 12px rgba(64, 224, 255, 0.4)) drop-shadow(0 0 18px rgba(147, 51, 234, 0.4));
+        }
+        45% {
+            filter: drop-shadow(0 0 6px rgba(64, 224, 255, 0.2));
+        }
+        50% {
+            filter: none;
+        }
+        60% {
+            filter: drop-shadow(0 0 8px rgba(64, 224, 255, 0.3));
+        }
+        70% {
+            filter: drop-shadow(0 0 15px rgba(64, 224, 255, 0.5)) drop-shadow(0 0 20px rgba(147, 51, 234, 0.5));
+        }
+        75% {
+            filter: drop-shadow(0 0 8px rgba(64, 224, 255, 0.2));
+        }
+        80% {
+            filter: drop-shadow(0 0 12px rgba(64, 224, 255, 0.4)) drop-shadow(0 0 15px rgba(147, 51, 234, 0.4));
+        }
+        90% {
+            filter: drop-shadow(0 0 10px rgba(64, 224, 255, 0.3)) drop-shadow(0 0 15px rgba(147, 51, 234, 0.3));
+        }
+        100% {
+            filter: drop-shadow(0 0 10px rgba(64, 224, 255, 0.3)) drop-shadow(0 0 15px rgba(147, 51, 234, 0.3));
         }
     }
 </style>

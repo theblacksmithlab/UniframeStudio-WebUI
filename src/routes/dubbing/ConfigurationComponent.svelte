@@ -44,7 +44,7 @@
 		const provider = ttsProvider as 'openai' | 'elevenlabs';
 		dubbingActions.updateConfig({
 			ttsProvider: provider,
-			ttsVoice: provider === 'openai' ? 'alloy' : ''
+			ttsVoice: provider === 'openai' ? 'onyx' : ''
 		});
 	}
 

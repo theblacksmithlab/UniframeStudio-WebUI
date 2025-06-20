@@ -31,7 +31,7 @@ export interface DubbingPipelineStatus {
 	job_id: string;
 	status: string;
 	progress_percentage?: number;
-
+	step?: number;
 	stage: 'preparation' | 'processing' | 'finalization';
 	step_description: string;
 
@@ -45,6 +45,7 @@ export interface DubbingPipelineStatus {
 	completed_at?: string;
 
 	original_file_name?: string;
+	review_required_url?: string;
 }
 
 export interface ApiError {
@@ -103,7 +104,6 @@ export interface AuthResponse {
 export interface SessionCheckResponse {
 	valid: boolean;
 	user_email: string;
-	// expires_at: number;
 }
 
 export interface UserJob {
@@ -111,4 +111,18 @@ export interface UserJob {
 	original_file_name: string;
 	status: string;
 	created_at: string;
+}
+
+export interface TranscriptionSegment {
+	id: number;
+	start: number;
+	end: number;
+	text: string;
+	translated_text: string;
+}
+
+export interface TranscriptionData {
+	text: string;
+	segments: TranscriptionSegment[];
+	translated_text: string;
 }
