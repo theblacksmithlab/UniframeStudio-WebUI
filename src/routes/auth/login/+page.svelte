@@ -55,58 +55,59 @@
 </script>
 
 <svelte:head>
-	<title>Login - Uniframe Studio</title>
+	<title>Sign in - Uniframe Studio</title>
 </svelte:head>
 
-<div class="min-h-screen bg-slate-900 bg-cover bg-center bg-no-repeat" style="background-image: url('/main-background.png');">
-	<!-- Полупрозрачный оверлей -->
-	<div class="absolute inset-0 bg-black/40"></div>
+<div class="min-h-screen bg-black bg-cover bg-center bg-no-repeat" style="background-image: url('/main-background.png');">
+	<!-- Page Overlay -->
+	<div class="absolute inset-0 bg-gradient-to-r from-black/10 via-black/50 to-black/10"></div>
 
-	<!-- Контент поверх фона -->
 	<div class="relative z-10 min-h-screen flex flex-col">
 
 		<!-- Header -->
-		<header class="bg-black/50 backdrop-blur-md border-b border-white/10">
-			<div class="max-w-7xl mx-auto px-6 py-4">
-				<div class="flex items-center justify-between">
-					<!-- Левая часть: кнопка назад + заголовок -->
-					<div class="flex items-center gap-6">
+		<header class="h-16 sm:h-18 md:h-20 lg:h-24 bg-black/40 backdrop-blur-md border-b border-white/10">
+			<div class="max-w-7xl mx-auto px-4 sm:px-6 h-full">
+				<div class="flex items-center justify-between h-full">
+					<!-- Left side: return home button + page title -->
+					<div class="flex items-center gap-4 sm:gap-6">
 						<button
 							on:click={handleBackClick}
-							class="flex items-center gap-2 px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
+							class="flex items-center gap-2 px-3 py-2 sm:px-4 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 text-sm sm:text-base"
 						>
-							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
 							</svg>
-							Back to Home
+							<span class="hidden sm:inline">Back to Home</span>
+							<span class="sm:hidden">Back</span>
 						</button>
 
-						<div class="h-8 w-px bg-white/20"></div>
+						<div class="h-6 sm:h-8 w-px bg-white/20"></div>
 
-						<h1 class="text-2xl font-bold text-white">
+						<h1 class="text-lg sm:text-xl md:text-2xl font-bold text-white">
 							Sign In
 						</h1>
 					</div>
 
-					<!-- Правая часть: лого -->
-					<div class="flex items-center gap-4">
-						<img src="/logo.png" alt="Uniframe Studio" class="h-12 w-12" />
-						<span class="text-white font-semibold" style="font-family: 'Limelight', sans-serif;">
-							UNIFRAME STUDIO
-						</span>
+					<!-- Right side: logo -->
+					<div class="flex items-center h-full">
+						<img
+							src="/logo.png"
+							alt="Uniframe Studio Logo"
+							class="logo-size object-contain logo-glow"
+						/>
 					</div>
 				</div>
 			</div>
 		</header>
 
-		<!-- Основной контент -->
+		<!-- Main content -->
 		<main class="flex-1 flex items-center justify-center px-6 py-12">
 			<div class="w-full max-w-md">
 
-				<!-- Форма авторизации -->
+				<!-- Authorization form -->
 				<div class="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 p-8">
 
-					<!-- Заголовок -->
+					<!-- Title -->
 					<div class="text-center mb-8">
 						<h2 class="text-3xl font-bold text-white mb-2">
 							Welcome Back
@@ -116,7 +117,7 @@
 						</p>
 					</div>
 
-					<!-- Форма -->
+					<!-- Form -->
 					<form on:submit|preventDefault={handleSubmit}>
 						<div class="mb-6">
 							<label for="email" class="block text-sm font-medium text-white/80 mb-2">
@@ -154,7 +155,7 @@
 						</button>
 					</form>
 
-					<!-- Сообщения -->
+					<!-- Messages -->
 					{#if message}
 						<div class="mt-6 p-4 bg-green-500/20 border border-green-400/50 rounded-lg">
 							<div class="flex items-start gap-3">
@@ -186,7 +187,7 @@
 						</div>
 						{/if}
 
-						<!-- Информация о magic link -->
+						<!-- Auth link info -->
 						<div class="mt-8 p-4 bg-blue-500/10 border border-blue-400/30 rounded-lg">
 							<div class="flex items-start gap-3">
 								<svg class="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -205,7 +206,7 @@
 
 						</div>
 
-						<!-- Дополнительная информация -->
+						<!-- Additional info -->
 						<div class="text-center mt-6">
 							<p class="text-white/60 text-sm">
 								New to Uniframe Studio? No problem! <br>
@@ -218,3 +219,14 @@
 
 	</div>
 </div>
+
+<style>
+    .logo-glow {
+        filter: drop-shadow(0 0 10px rgba(64, 224, 255, 0.3)) drop-shadow(0 0 15px rgba(147, 51, 234, 0.3));
+        opacity: 0.8;
+    }
+
+    .logo-size {
+        height: calc(100% / 2.5);
+    }
+</style>

@@ -25,6 +25,11 @@ export interface DubbingData {
 
 	error?: string;
 	isLoadedJob?: boolean;
+
+	showReviewModal?: boolean;
+	reviewFileUrl?: string;
+	reviewFileContent?: string;
+	reviewProcessedUrl?: string;
 }
 
 export const dubbing = writable<DubbingData>({ stage: 'idle' });
@@ -86,6 +91,33 @@ export const dubbingActions = {
 			resultUrls: jobData.result_urls || undefined,
 			error: jobData.error_message || undefined,
 			isLoadedJob: true
+		}));
+	},
+
+	showReview(fileUrl: string) {
+		dubbing.update(state => ({
+			...state,
+			showReviewModal: true,
+			reviewFileUrl: fileUrl
+		}));
+	},
+
+	hideReview() {
+		dubbing.update(state => ({
+			...state,
+			showReviewModal: false,
+			reviewFileUrl: undefined,
+			reviewFileContent: undefined
+		}));
+	},
+
+	markReviewProcessed() {
+		dubbing.update(state => ({
+			...state,
+			showReviewModal: false,
+			reviewProcessedUrl: state.reviewFileUrl,
+			reviewFileUrl: undefined,
+			reviewFileContent: undefined
 		}));
 	}
 };

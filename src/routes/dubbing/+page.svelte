@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { dubbing, dubbingActions } from '$lib/stores/dubbing';
+	import TranscriptionReviewModal from '$lib/components/TranscriptionReviewModal.svelte';
 
 	function handleBackClick() {
 		dubbingActions.reset();
@@ -15,18 +16,17 @@
 	<title>Video Dubbing - Uniframe Studio</title>
 </svelte:head>
 
-<div class="min-h-screen bg-slate-900 bg-cover bg-center bg-no-repeat" style="background-image: url('/main-background.png');">
-	<!-- Полупрозрачный оверлей -->
-	<div class="absolute inset-0 bg-black/30"></div>
+<div class="min-h-screen bg-black bg-cover bg-center bg-no-repeat" style="background-image: url('/main-background.png');">
+	<!-- Page overlay -->
+	<div class="absolute inset-0 bg-gradient-to-r from-black/10 via-black/80 to-black/10"></div>
 
-	<!-- Контент поверх фона -->
 	<div class="relative z-10 min-h-screen flex flex-col">
 
-		<!-- Header с навигацией -->
-		<header class="bg-black/50 backdrop-blur-md border-b border-white/10">
+		<!-- Header -->
+		<header class="bg-black/40 backdrop-blur-md border-b border-white/10">
 			<div class="max-w-7xl mx-auto px-6 py-4">
 				<div class="flex items-center justify-between">
-					<!-- Левая часть: кнопка назад + заголовок -->
+					<!-- Left side: return home button + page title -->
 					<div class="flex items-center gap-6">
 						<button
 							on:click={handleBackClick}
@@ -46,7 +46,7 @@
 						</h1>
 					</div>
 
-					<!-- Правая часть: индикатор текущего этапа -->
+					<!-- right side: processing stage indicator -->
 					<div class="flex items-center gap-3">
 						<div class="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full border border-white/20">
               <span class="text-white/90 text-sm font-medium">
@@ -70,45 +70,45 @@
 			</div>
 		</header>
 
-		<!-- Основной контент -->
+		<!-- Main content -->
 		<main class="flex-1 max-w-7xl mx-auto w-full px-6 py-8">
 
-			<!-- Контейнер для разных этапов -->
+			<!-- Components container -->
 			<div class="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 min-h-[600px] p-8">
 
-				<!-- Условный рендеринг компонентов по состоянию -->
+				<!-- Components conditional rendering -->
 				{#if currentStage === 'idle'}
-					<!-- Upload компонент -->
+					<!-- UploadComponent -->
 					{#await import('./UploadComponent.svelte') then { default: UploadComponent }}
 						<UploadComponent />
 					{/await}
 
 				{:else if currentStage === 'uploading'}
-					<!-- Прогресс загрузки -->
+					<!-- UploadProgressComponent -->
 					{#await import('./UploadProgressComponent.svelte') then { default: UploadProgressComponent }}
 						<UploadProgressComponent />
 					{/await}
 
 				{:else if currentStage === 'configuring'}
-					<!-- Панель настроек -->
+					<!-- ConfigurationComponent -->
 					{#await import('./ConfigurationComponent.svelte') then { default: ConfigurationComponent }}
 						<ConfigurationComponent />
 					{/await}
 
 				{:else if currentStage === 'processing'}
-					<!-- Статус обработки -->
+					<!-- ProcessingStatusComponent -->
 					{#await import('./ProcessingStatusComponent.svelte') then { default: ProcessingStatusComponent }}
 						<ProcessingStatusComponent />
 					{/await}
 
 				{:else if currentStage === 'completed'}
-					<!-- Результаты -->
+					<!-- ResultsComponent -->
 					{#await import('./ResultsComponent.svelte') then { default: ResultsComponent }}
 						<ResultsComponent />
 					{/await}
 
 				{:else if currentStage === 'error'}
-					<!-- Обработка ошибок -->
+					<!-- Error -->
 					<div class="text-center text-red-400">
 						<h2 class="text-xl font-semibold mb-4">Error</h2>
 						<p class="mb-6">{$dubbing.error || 'Unknown error occurred'}</p>
@@ -127,3 +127,6 @@
 
 	</div>
 </div>
+
+<!-- Review Modal -->
+<TranscriptionReviewModal />

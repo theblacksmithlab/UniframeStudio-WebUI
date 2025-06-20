@@ -5,7 +5,7 @@ import type {
 	DubbingPipelineResponse,
 	DubbingPipelineStatus,
 	ApiError as ApiErrorType, SendMagicLinkRequest, AuthResponse, VerifyTokenRequest,
-	SessionCheckResponse, UserJob
+	SessionCheckResponse, UserJob, TranscriptionData
 } from '$lib/types/api_types';
 
 const API_BASE_URL = 'https://api.blacksmith-lab.com';
@@ -248,6 +248,48 @@ class ApiClient {
 		return this.request<UserJob[]>('/api/uniframe/user/jobs', {
 			method: 'GET'
 		});
+	}
+
+	async submitTranscriptionReview(jobId: string, transcriptionData: TranscriptionData): Promise<string> {
+		const response = await this.request<{ upload_url: string }>(`/api/uniframe/dubbing/${jobId}/submit_review`, {
+			method: 'GET'
+		});
+
+		const uploadUrl = response.upload_url;
+
+		const controller = new AbortController();
+		const timeoutId = setTimeout(() => controller.abort(), API_TIMEOUT);
+
+		try {
+			const uploadResponse = await fetch(uploadUrl, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(transcriptionData),
+				signal: controller.signal
+			});
+
+			clearTimeout(timeoutId);
+
+			if (!uploadResponse.ok) {
+				throw new ApiClientError('UPLOAD_FAILED', `Upload failed: ${uploadResponse.statusText}`);
+			}
+
+			return uploadUrl;
+		} catch (error) {
+			clearTimeout(timeoutId);
+
+			if (error instanceof ApiClientError) {
+				throw error;
+			}
+
+			if (error instanceof Error && error.name === 'AbortError') {
+				throw new ApiClientError('TIMEOUT', 'Upload timeout');
+			}
+
+			throw new ApiClientError('UPLOAD_ERROR', 'Upload network error');
+		}
 	}
 }
 

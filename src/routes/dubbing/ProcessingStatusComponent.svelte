@@ -14,6 +14,25 @@
 	$: pythonSteps = pipelineStatus?.processing_steps || [];
 	$: currentPythonStepIndex = pipelineStatus?.current_step_index ?? -1;
 
+	$: isReviewRequired = pipelineStatus?.step === 10;
+	$: reviewFileUrl = pipelineStatus?.review_required_url;
+
+	let reviewProcessedAtStep: number | null = null;
+
+	$: if (isReviewRequired && reviewFileUrl && !config.showReviewModal) {
+		if (reviewProcessedAtStep !== pipelineStatus?.step) {
+			dubbingActions.showReview(reviewFileUrl);
+		}
+	}
+
+	$: if (!config.showReviewModal && config.reviewProcessedUrl) {
+		reviewProcessedAtStep = pipelineStatus?.step || null;
+	}
+
+	$: if (pipelineStatus?.step && pipelineStatus.step !== reviewProcessedAtStep) {
+		reviewProcessedAtStep = null;
+	}
+
 	let elapsedTime = 0;
 	let timeInterval: ReturnType<typeof setInterval>;
 	let startTime = Date.now();
@@ -93,7 +112,7 @@
 			Processing Your Video
 		</h2>
 		<p class="text-white/70 text-lg">
-			The system is working on your video dubbing. This can take anywhere from a few minutes to several hours.
+			The system is working on your video dubbing. Processing time depends on the length of the original video.
 		</p>
 	</div>
 
@@ -277,5 +296,4 @@
 		</div>
 
 	</div>
-
 </div>

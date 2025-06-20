@@ -16,7 +16,7 @@
 </script>
 <div class="absolute inset-0 bg-black/20"></div>
 <div class="text-center max-w-2xl mx-auto">
-	<!-- Заголовок -->
+	<!-- Title -->
 	<div class="mb-8">
 		<h2 class="text-3xl font-bold text-white mb-4">
 			Uploading Video
@@ -26,10 +26,10 @@
 		</p>
 	</div>
 
-	<!-- Карточка с прогрессом -->
+	<!-- Progress -->
 	<div class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-8">
 
-		<!-- Иконка файла -->
+		<!-- File icon -->
 		<div class="mb-6">
 			<div class="w-20 h-20 mx-auto bg-blue-500/20 rounded-2xl flex items-center justify-center">
 				<svg class="w-10 h-10 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -38,7 +38,7 @@
 			</div>
 		</div>
 
-		<!-- Информация о файле -->
+		<!-- File info -->
 		<div class="mb-6">
 			<h3 class="text-xl font-semibold text-white mb-2">
 				{fileName}
@@ -48,26 +48,26 @@
 			</p>
 		</div>
 
-		<!-- Прогресс бар -->
+		<!-- Progress bar -->
 		<div class="mb-6">
 			<div class="flex justify-between items-center mb-2">
 				<span class="text-white/80 font-medium">{uploadStatus}</span>
 				<span class="text-white font-bold">{progress}%</span>
 			</div>
 
-			<!-- Основной прогресс бар -->
+			<!-- Main progress bar -->
 			<div class="w-full bg-white/10 rounded-full h-3 overflow-hidden">
 				<div
 					class="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-500 ease-out relative"
 					style="width: {progress}%"
 				>
-					<!-- Анимированный блик -->
+					<!-- Animated blink -->
 					<div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 animate-pulse"></div>
 				</div>
 			</div>
 		</div>
 
-		<!-- Детали процесса -->
+		<!-- Progress details -->
 		<div class="mb-8 space-y-2">
 			<div class="flex items-center justify-between text-sm">
 				<span class="text-white/60">Status:</span>
@@ -85,7 +85,7 @@
 			{/if}
 		</div>
 
-		<!-- Кнопка отмены (только если загрузка не завершена) -->
+		<!-- cancel button -->
 		{#if progress < 100}
 			<button
 				on:click={handleCancel}
@@ -97,7 +97,7 @@
 
 	</div>
 
-	<!-- Дополнительная информация -->
+	<!-- Additional info -->
 	<div class="mt-8 p-4 bg-white/5 rounded-lg">
 		<div class="flex items-center justify-center gap-2 text-white/60 text-sm">
 			<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -107,7 +107,7 @@
 		</div>
 	</div>
 
-	<!-- Индикатор загрузки (спиннер) для состояния 0% -->
+	<!-- Uploading spinner for 0% stage -->
 	{#if progress === 0}
 		<div class="mt-6 flex justify-center">
 			<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white/60"></div>

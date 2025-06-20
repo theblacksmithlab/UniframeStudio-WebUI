@@ -98,10 +98,11 @@
 		}
 	}
 </script>
+
 <div class="absolute inset-0 bg-black/20"></div>
-<!-- Upload зона -->
+<!-- Upload zone -->
 <div class="text-center">
-	<!-- Заголовок -->
+	<!-- Title -->
 	<div class="mb-8">
 		<h2 class="text-3xl font-bold text-white mb-4">
 			Upload Your Video
@@ -111,24 +112,19 @@
 		</p>
 	</div>
 
-	<!-- Drag & Drop зона -->
+	<!-- Drag & Drop zone -->
 	<div
-		class="relative border-2 border-dashed rounded-2xl p-12 transition-all duration-300 cursor-pointer group"
-		class:border-white-30={!isDragOver}
-	class:bg-white-5={!isDragOver}
-	class:border-blue-400={isDragOver}
-	class:bg-blue-500-10={isDragOver}
-	class:hover:border-white-50={!isDragOver}
-	class:hover:bg-white-10={!isDragOver}
-	on:dragover={handleDragOver}
-	on:dragleave={handleDragLeave}
-	on:drop={handleDrop}
-	on:click={openFileDialog}
-	role="button"
-	tabindex="0"
-	on:keydown={handleKeyDown}
+		class="relative border-2 border-dotted rounded-2xl p-12 transition-all duration-300 cursor-pointer group upload-zone"
+		class:drag-over={isDragOver}
+		on:dragover={handleDragOver}
+		on:dragleave={handleDragLeave}
+		on:drop={handleDrop}
+		on:click={openFileDialog}
+		role="button"
+		tabindex="0"
+		on:keydown={handleKeyDown}
 	>
-	<!-- Центральная иконка -->
+	<!-- Central icon -->
 	<div class="mb-6">
 		<svg
 			class="w-16 h-16 mx-auto text-white/40 group-hover:text-white/60 transition-colors duration-300"
@@ -146,7 +142,7 @@
 		</svg>
 	</div>
 
-	<!-- Текст -->
+	<!-- Text -->
 	<div class="mb-6">
 		<p class="text-xl font-semibold text-white mb-2">
 			{isDragOver ? 'Drop your video here' : 'Drop your video here'}
@@ -156,14 +152,14 @@
 		</p>
 	</div>
 
-	<!-- Поддерживаемые форматы -->
+	<!-- Supported formats -->
 	<div class="text-sm text-white/50">
 		<p class="mb-1">Supported formats:</p>
 		<p>MP4, AVI, MOV, MKV, WEBM, FLV, WMV, 3GP, M4V</p>
 		<p class="mt-2">Maximum file size: 1GB</p>
 	</div>
 
-	<!-- Скрытый input для выбора файлов -->
+	<!-- File browser -->
 	<input
 		bind:this={fileInput}
 		type="file"
@@ -173,17 +169,17 @@
 	/>
 </div>
 
-<!-- Важные требования к видео -->
+<!-- Requirements -->
 <div class="mt-6 p-6 bg-amber-500/10 border border-amber-400/30 rounded-2xl">
 	<div class="flex items-start gap-4">
-		<!-- Иконка предупреждения -->
+		<!-- Attention icon -->
 		<div class="flex-shrink-0">
 			<svg class="w-6 h-6 text-amber-400 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
 			</svg>
 		</div>
 
-		<!-- Контент предупреждения -->
+		<!-- Warnings -->
 		<div class="flex-1">
 			<h3 class="text-lg font-semibold text-amber-300 mb-3">
 				📋 Video Requirements & Limitations
@@ -196,25 +192,23 @@
 				</p>
 
 				<p>
-					<strong>Duration:</strong> Videos longer than 30 minutes may take significantly more time to process.
-					Consider splitting very long videos for faster turnaround.
+					<strong>Duration:</strong> Longer videos will take significantly more time to process.
 				</p>
 
 				<p>
-					<strong>Language Detection:</strong> Our AI works best with videos where the primary language is spoken clearly.
-					Mixed languages or heavy accents may require manual language selection.
+					<strong>Language Detection:</strong> Our system works best with videos where the primary language is spoken clearly.
+					Heavy accents may require manual language selection.
 				</p>
 
 				<p>
 					<strong>Processing Time:</strong> Typical processing takes 2-5 minutes per minute of video content.
-					Complex audio or premium features may extend processing time.
 				</p>
 			</div>
 		</div>
 	</div>
 </div>
 
-<!-- Ошибка валидации -->
+<!-- Validation error -->
 {#if uploadError}
 	<div class="mt-6 p-4 bg-red-500/20 border border-red-400/50 rounded-lg">
 		<p class="text-red-300 font-medium">
@@ -223,12 +217,12 @@
 	</div>
 {/if}
 
-<!-- Дополнительная информация -->
+<!-- Additional info -->
 <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
 	<div class="p-4 bg-white/5 rounded-lg">
 		<div class="text-2xl mb-2">🎯</div>
 		<h3 class="text-white font-semibold mb-1">High Quality</h3>
-		<p class="text-white/60 text-sm">AI-powered dubbing maintains original video quality</p>
+		<p class="text-white/60 text-sm">AI-powered dubbing system maintains original video quality</p>
 	</div>
 
 	<div class="p-4 bg-white/5 rounded-lg">
@@ -244,3 +238,20 @@
 	</div>
 </div>
 </div>
+
+<style>
+    .upload-zone {
+        border-color: rgba(255, 255, 255, 0.3);
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .upload-zone:hover:not(.drag-over) {
+        border-color: rgba(255, 255, 255, 0.5);
+        background-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .upload-zone.drag-over {
+        border-color: #60a5fa; /* blue-400 */
+        background-color: rgba(59, 130, 246, 0.1); /* blue-500/10 */
+    }
+</style>
