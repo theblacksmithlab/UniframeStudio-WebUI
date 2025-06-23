@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store';
-import type { DubbingPipelineStatus } from '$lib/types/api_types';
+import type { DubbingPipelineStatus, UserBalance } from '$lib/types/api_types';
+import { apiClient } from '$lib/api/client';
 
 export type DubbingStage = 'idle' | 'uploading' | 'configuring' | 'processing' | 'completed' | 'error';
 
@@ -30,6 +31,11 @@ export interface DubbingData {
 	reviewFileUrl?: string;
 	reviewFileContent?: string;
 	reviewProcessedUrl?: string;
+
+	video_duration_seconds?: number;
+	estimated_cost_usd?: number;
+	user_balance?: UserBalance;
+	balance_check_error?: string;
 }
 
 export const dubbing = writable<DubbingData>({ stage: 'idle' });
@@ -47,15 +53,16 @@ export const dubbingActions = {
 		dubbing.update(state => ({ ...state, uploadProgress: progress }));
 	},
 
-	uploadComplete(videoS3Url: string, jobId: string) {
+	uploadComplete(videoS3Url: string, jobId: string, video_duration_seconds: number, estimated_cost_usd: number,) {
 		dubbing.update(state => ({
 			...state,
 			stage: 'configuring',
-			videoS3Url,
-			jobId,
-			// Defaults
+			videoS3Url: videoS3Url,
+			jobId: jobId,
 			ttsProvider: 'openai',
-			ttsVoice: 'onyx'
+			ttsVoice: 'onyx',
+			video_duration_seconds: video_duration_seconds,
+			estimated_cost_usd: estimated_cost_usd,
 		}));
 	},
 
@@ -92,6 +99,29 @@ export const dubbingActions = {
 			error: jobData.error_message || undefined,
 			isLoadedJob: true
 		}));
+	},
+
+	async checkUserBalance(estimated_cost: number) {
+		try {
+			const balance = await apiClient.getUserBalance();
+
+			dubbing.update(state => ({
+				...state,
+				user_balance: balance,
+				balance_check_error: undefined
+			}));
+
+			return balance.balance_usd >= estimated_cost &&
+				balance.active_dubbing_jobs < balance.max_concurrent_dubbing_jobs;
+		} catch (error) {
+			console.error('Failed to check user balance:', error);
+			dubbing.update(state => ({
+				...state,
+				user_balance: undefined,
+				balance_check_error: error instanceof Error ? error.message : 'Failed to check balance'
+			}));
+			return false;
+		}
 	},
 
 	showReview(fileUrl: string) {

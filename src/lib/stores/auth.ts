@@ -40,12 +40,17 @@ const createAuthStore = () => {
 				try {
 					const response = await apiClient.checkSession(token);
 
-					set({
-						isAuthenticated: response.valid,
-						sessionToken: token,
-						userEmail: response.user_email,
-						loading: false
-					});
+					if (response.valid) {
+						set({
+							isAuthenticated: true,
+							sessionToken: token,
+							userEmail: response.user_email,
+							loading: false
+						});
+					} else {
+						localStorage.removeItem('session_token');
+						set({ isAuthenticated: false, sessionToken: null, userEmail: null, loading: false });
+					}
 				} catch (error) {
 					console.error('Auth check failed:', error);
 					localStorage.removeItem('session_token');
