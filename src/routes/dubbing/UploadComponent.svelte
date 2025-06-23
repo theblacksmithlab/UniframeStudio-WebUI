@@ -62,10 +62,22 @@
 		try {
 			dubbingActions.startUpload(file.name);
 
+			let videoDurationSeconds;
+			try {
+				videoDurationSeconds = await getVideoDuration(file);
+				console.log('Video duration:', videoDurationSeconds, 'seconds');
+			} catch (error) {
+				console.error('Failed to get video duration:', error);
+				uploadError = 'Failed to get video file duration. Try again with another file.';
+				dubbingActions.setError(uploadError);
+				return;
+			}
+
 			const prepareResponse = await apiClient.prepareUpload({
 				system_file_name: generateSafeFilename(file.name),
 				original_file_name: file.name,
-				content_type: file.type
+				content_type: file.type,
+				video_duration_seconds: videoDurationSeconds
 			});
 
 			await apiClient.uploadFile(
@@ -78,13 +90,35 @@
 
 			dubbingActions.uploadComplete(
 				prepareResponse.video_s3_url,
-				prepareResponse.job_id
+				prepareResponse.job_id,
+				prepareResponse.video_duration_seconds,
+				prepareResponse.estimated_cost_usd,
 			);
 
 		} catch (error) {
 			console.error('Upload failed:', error);
-			dubbingActions.setError(error instanceof Error ? error.message : 'Upload failed');
+			uploadError = error instanceof Error ? error.message : 'Upload failed';
+			dubbingActions.setError(uploadError);
 		}
+	}
+
+	function getVideoDuration(file: File): Promise<number> {
+		return new Promise((resolve, reject) => {
+			const video = document.createElement('video');
+			video.preload = 'metadata';
+
+			video.onloadedmetadata = () => {
+				URL.revokeObjectURL(video.src);
+				resolve(video.duration);
+			};
+
+			video.onerror = () => {
+				URL.revokeObjectURL(video.src);
+				reject(new Error('Error getting video duration'));
+			};
+
+			video.src = URL.createObjectURL(file);
+		});
 	}
 
 	function openFileDialog() {
@@ -204,6 +238,12 @@
 					<strong>Processing Time:</strong> Typical processing takes 2-5 minutes per minute of video content.
 				</p>
 			</div>
+		</div>
+
+		<div class="flex-shrink-0">
+			<svg class="w-6 h-6 text-amber-400 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+			</svg>
 		</div>
 	</div>
 </div>

@@ -3,6 +3,8 @@
 	import { apiClient } from '$lib/api/client';
 	import { SUPPORTED_LANGUAGES, TTS_PROVIDERS, OPENAI_VOICES } from '$lib/types/api_types';
 	import { validateDubbingConfig } from '$lib/utils/validation';
+	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
 	const ELEVENLABS_ENABLED = false;
 
@@ -14,8 +16,40 @@
 			: provider.name
 	}));
 
+	let isCheckingBalance = false;
+
 	$: config = $dubbing;
-	$: canStartProcessing = config.targetLanguage && config.ttsProvider && config.ttsVoice;
+
+	$: hasRequiredFields = config.targetLanguage && config.ttsProvider && config.ttsVoice;
+	$: hasEnoughBalance = config.user_balance && config.estimated_cost_usd ?
+		config.user_balance.balance_usd >= config.estimated_cost_usd : false;
+	$: hasAvailableSlot = config.user_balance ?
+		config.user_balance.active_dubbing_jobs < config.user_balance.max_concurrent_dubbing_jobs : false;
+
+	$: canProcessJob = hasEnoughBalance && hasAvailableSlot;
+	$: canStartProcessing = hasRequiredFields && canProcessJob && !isCheckingBalance;
+
+	function handleTopUp() {
+		goto('/billing');
+		console.log('Will redirect to balance control page');
+	}
+
+	onMount(async () => {
+		if (config.estimated_cost_usd) {
+			await checkBalance();
+		}
+	});
+
+	async function checkBalance() {
+		if (!config.estimated_cost_usd) return;
+
+		isCheckingBalance = true;
+		try {
+			await dubbingActions.checkUserBalance(config.estimated_cost_usd);
+		} finally {
+			isCheckingBalance = false;
+		}
+	}
 
 	let sourceLanguage = '';
 	let targetLanguage = '';
@@ -58,6 +92,14 @@
 
 	async function handleStartProcessing() {
 		configError = '';
+
+		if (config.estimated_cost_usd) {
+			const canStart = await dubbingActions.checkUserBalance(config.estimated_cost_usd);
+			if (!canStart) {
+				configError = 'Insufficient balance or concurrent job limit exceeded';
+				return;
+			}
+		}
 
 		const validation = validateDubbingConfig({
 			targetLanguage: config.targetLanguage,
@@ -116,6 +158,139 @@
 			Choose your preferred language and voice settings for AI dubbing
 		</p>
 	</div>
+
+	<!-- Информация о стоимости -->
+	{#if config.estimated_cost_usd}
+		<div class="space-y-4 mb-6">
+			<!-- Стоимость обработки -->
+			<div class="bg-blue-500/20 backdrop-blur-md rounded-2xl border border-blue-400/30 p-6">
+				<div class="flex items-center justify-between">
+					<div class="flex items-center gap-3">
+						<svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+						</svg>
+						<div>
+							<h3 class="text-lg font-semibold text-white">Processing Cost</h3>
+							{#if config.video_duration_seconds}
+								<p class="text-blue-200/80 text-sm">Duration: {Math.round(config.video_duration_seconds / 60)} minutes</p>
+							{:else}
+								<p class="text-blue-200/80 text-sm">Duration: calculating...</p>
+							{/if}
+						</div>
+					</div>
+					<div class="text-right">
+						<div class="text-2xl font-bold text-white">${config.estimated_cost_usd.toFixed(2)}</div>
+						<p class="text-blue-200/80 text-sm">Will be charged on start</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- Информация о балансе -->
+			{#if isCheckingBalance}
+				<div class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-6">
+					<div class="flex items-center gap-3">
+						<div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+						<span class="text-white">Checking your balance...</span>
+					</div>
+				</div>
+			{:else if config.user_balance}
+				<div class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-6">
+					<!-- Информация о балансе и лимитах -->
+					<div class="mb-4">
+						<h3 class="text-lg font-semibold text-white mb-3">Your Balance and Limit Rates</h3>
+						<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+							<div>
+								<p class="text-white/60">Available Balance:</p>
+								<p class="text-white font-semibold text-lg">
+									<span class="text-green-400">${config.user_balance.balance_usd.toFixed(2)}</span>
+								</p>
+							</div>
+							<div>
+								<p class="text-white/60">Active Dubbing Jobs:</p>
+								<p class="text-white font-semibold text-lg">
+									{config.user_balance.active_dubbing_jobs}/{config.user_balance.max_concurrent_dubbing_jobs}
+								</p>
+							</div>
+						</div>
+					</div>
+
+					<!-- Статус и действия -->
+					{#if canProcessJob}
+						<!-- Все хорошо -->
+						<div class="flex items-center gap-2 text-green-400 bg-green-500/10 rounded-lg p-3">
+							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+							</svg>
+							<span class="font-medium">Ready to process</span>
+						</div>
+					{:else}
+						<!-- Есть проблемы -->
+						<div class="space-y-3">
+							{#if !hasEnoughBalance}
+								<div class="flex items-start gap-3 text-red-400 bg-red-500/10 rounded-lg p-3">
+									<svg class="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 15.5c-.77.833.192 2.5 1.732 2.5z" />
+									</svg>
+									<div class="flex-1">
+										<p class="font-medium">Insufficient balance</p>
+										<p class="text-red-300 text-sm">
+											Need ${(config.estimated_cost_usd - config.user_balance.balance_usd).toFixed(2)} more
+										</p>
+									</div>
+								</div>
+							{/if}
+
+							{#if !hasAvailableSlot}
+								<div class="flex items-start gap-3 text-yellow-400 bg-yellow-500/10 rounded-lg p-3">
+									<svg class="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 15.5c-.77.833.192 2.5 1.732 2.5z" />
+									</svg>
+									<div class="flex-1">
+										<p class="font-medium">Job limit reached</p>
+										<p class="text-yellow-300 text-sm">
+											Maximum concurrent jobs reached. Please wait for current jobs to complete.
+										</p>
+									</div>
+								</div>
+							{/if}
+
+							<!-- Кнопка пополнения только если проблема с балансом -->
+							{#if !hasEnoughBalance}
+								<div class="pt-2">
+									<button
+										on:click={handleTopUp}
+										class="w-full sm:w-auto px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition-colors"
+									>
+										Top Up Balance
+									</button>
+								</div>
+							{/if}
+						</div>
+					{/if}
+				</div>
+			{:else if config.balance_check_error}
+				<div class="bg-red-500/20 backdrop-blur-md rounded-2xl border border-red-400/30 p-6">
+					<div class="flex items-center justify-between">
+						<div class="flex items-center gap-3">
+							<svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 15.5c-.77.833.192 2.5 1.732 2.5z" />
+							</svg>
+							<div>
+								<h3 class="text-lg font-semibold text-red-300">Balance Check Failed</h3>
+								<p class="text-red-200/80 text-sm">{config.balance_check_error}</p>
+							</div>
+						</div>
+						<button
+							on:click={checkBalance}
+							class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-colors"
+						>
+							Retry
+						</button>
+					</div>
+				</div>
+			{/if}
+		</div>
+	{/if}
 
 	<!-- Основная форма настроек -->
 	<div class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-8">
@@ -258,7 +433,7 @@
 
 			<div>
 				<label for="transcription-keywords" class="block text-white/80 font-medium mb-2">
-					Keywords for Better Recognition (optional)
+					Keywords for Better Voice Recognition (optional)
 				</label>
 				<textarea
 					id="transcription-keywords"
@@ -294,11 +469,23 @@
 				{/if}
 			</button>
 
-			{#if !canStartProcessing}
+			<!-- Обновляем сообщения под кнопкой -->
+			{#if !canStartProcessing && !isCheckingBalance && !isStarting}
 				<p class="text-white/50 text-sm mt-2">
-					Please fill in all required fields to continue
+					{#if !hasRequiredFields}
+						Please fill in all required fields to continue
+					{:else if !config.user_balance}
+						Checking balance...
+					{:else if !hasEnoughBalance}
+						Insufficient balance - please top up your account
+					{:else if !hasAvailableSlot}
+						Maximum concurrent jobs reached - please wait for current jobs to complete
+					{:else}
+						Please check your balance to continue
+					{/if}
 				</p>
 			{/if}
+
 		</div>
 
 	</div>

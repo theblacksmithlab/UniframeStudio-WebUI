@@ -2,6 +2,7 @@ export interface DubbingPipelinePrepareRequest {
 	system_file_name: string;
 	original_file_name: string;
 	content_type: string;
+	video_duration_seconds: number;
 }
 
 export interface DubbingPipelinePrepareResponse {
@@ -9,6 +10,8 @@ export interface DubbingPipelinePrepareResponse {
 	upload_url: string;
 	video_s3_url: string;
 	expires_in: number;
+	estimated_cost_usd: number,
+	video_duration_seconds: number,
 }
 
 export interface DubbingPipelineRequest {
@@ -125,4 +128,12 @@ export interface TranscriptionData {
 	text: string;
 	segments: TranscriptionSegment[];
 	translated_text: string;
+}
+
+export interface UserBalance {
+	balance_usd: number;
+	active_dubbing_jobs: number;
+	active_lipsync_jobs: number;
+	max_concurrent_dubbing_jobs: number;
+	max_concurrent_lipsync_jobs: number;
 }

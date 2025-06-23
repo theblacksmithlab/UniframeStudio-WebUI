@@ -5,8 +5,9 @@ import type {
 	DubbingPipelineResponse,
 	DubbingPipelineStatus,
 	ApiError as ApiErrorType, SendMagicLinkRequest, AuthResponse, VerifyTokenRequest,
-	SessionCheckResponse, UserJob, TranscriptionData
+	SessionCheckResponse, UserJob, TranscriptionData, UserBalance
 } from '$lib/types/api_types';
+import { goto } from '$app/navigation';
 
 const API_BASE_URL = 'https://api.blacksmith-lab.com';
 const API_TIMEOUT = 30000;
@@ -71,6 +72,16 @@ class ApiClient {
 						message: `HTTP ${response.status}: ${response.statusText}`
 					};
 				}
+
+				if (response.status === 401) {
+					if (typeof window !== 'undefined') {
+						localStorage.removeItem('session_token');
+						const { auth } = await import('$lib/stores/auth');
+						auth.logout();
+						await goto('/auth/login');
+					}
+				}
+
 				throw new ApiClientError(errorData.code, errorData.message, response.status);
 			}
 
@@ -168,6 +179,7 @@ class ApiClient {
 			if (!isPolling) return
 
 			if (Date.now() - startTime > maxDuration) {
+				await this.refundFailedJob(jobId);
 				onError('Pipeline timeout - maximum duration exceeded (24 hours)');
 				return;
 			}
@@ -183,6 +195,7 @@ class ApiClient {
 				}
 
 				if (status.status === 'failed' || status.error_message) {
+					await this.refundFailedJob(jobId);
 					onError(status.error_message || 'Pipeline failed');
 					return;
 				}
@@ -248,6 +261,23 @@ class ApiClient {
 		return this.request<UserJob[]>('/api/uniframe/user/jobs', {
 			method: 'GET'
 		});
+	}
+
+	async getUserBalance(): Promise<UserBalance> {
+		return this.request<UserBalance>('/api/uniframe/user/balance', {
+			method: 'GET'
+		});
+	}
+
+	async refundFailedJob(jobId: string): Promise<void> {
+		try {
+			await this.request<{ success: boolean }>(`/api/uniframe/user/refund/${jobId}`, {
+				method: 'POST'
+			});
+			console.log(`Refund processed for job: ${jobId}`);
+		} catch (error) {
+			console.error(`Failed to refund job ${jobId}:`, error);
+		}
 	}
 
 	async submitTranscriptionReview(jobId: string, transcriptionData: TranscriptionData): Promise<string> {
