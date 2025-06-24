@@ -266,10 +266,22 @@
 		</div>
 
 		<!-- Footer (10%) -->
-		<footer class="h-[10vh] flex items-center justify-center bg-black/80 backdrop-blur-md">
+		<footer class="h-[10vh] flex items-center justify-center bg-black/80 backdrop-blur-md px-[3.3vh] relative">
+			<!-- Центрированный текст -->
 			<p class="text-gray-500 text-xs sm:text-xs md:text-sm opacity-60 font-light">
 				© 2025 Uniframe Studio - AI Video Processing Platform
 			</p>
+
+			<!-- Contact & Support Button - справа -->
+			<button
+				on:click={() => goto('/contact&support')}
+				class="absolute right-[3.3vh] flex items-center gap-2 px-4 py-2 text-yellow-400/80 hover:text-yellow-300 hover:bg-yellow-400/10 rounded-lg transition-all duration-200 text-xs sm:text-sm font-medium cursor-pointer border border-yellow-400/20 hover:border-yellow-400/40"
+			>
+				<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+				</svg>
+				Contact & Support
+			</button>
 		</footer>
 	</div>
 
