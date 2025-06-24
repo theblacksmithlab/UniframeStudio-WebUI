@@ -87,10 +87,6 @@
 		}
 	}
 
-	function formatJobType(type: string): string {
-		return type.charAt(0).toUpperCase() + type.slice(1);
-	}
-
 	function formatDate(dateStr: string): string {
 		return new Date(dateStr).toLocaleDateString('en-US', {
 			year: 'numeric',
@@ -207,7 +203,7 @@
 									</p>
 								</div>
 								<div class="bg-white/5 rounded-lg p-4 border border-white/10">
-									<p class="text-white/60 text-sm mb-1">Max Concurrent</p>
+									<p class="text-white/60 text-sm mb-1">Max Concurrent Jobs</p>
 									<p class="text-xl font-semibold text-white">
 										{userBalance.max_concurrent_dubbing_jobs}
 									</p>
@@ -244,7 +240,7 @@
 						<svg class="w-7 h-7 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
 						</svg>
-						Add Funds
+						Add Funds (via Cryptocurrency)
 					</h2>
 
 					<div class="space-y-6">
@@ -272,7 +268,7 @@
 
 						<!-- Quick Amount Buttons -->
 						<div class="grid grid-cols-3 gap-3">
-							{#each [10, 25, 50] as amount}
+							{#each [10, 25, 50] as amount (amount)}
 								<button
 									on:click={() => topUpAmount = amount.toString()}
 									disabled={isTopUpProcessing}
@@ -289,7 +285,7 @@
 								<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
 								</svg>
-								<span class="font-medium">Balance topped up successfully!</span>
+								<span class="font-medium">Balance topped up successfully!<br>Just kidding, we are waiting for the payment service moderation now 😁</span>
 							</div>
 						{/if}
 
@@ -320,9 +316,9 @@
 						</button>
 
 						<!-- Payment Info -->
-						<div class="text-xs text-white/50 bg-white/5 rounded-lg p-3 border border-white/10">
-							<p class="font-medium mb-1">💳 Secure Payment</p>
-							<p>Payments are processed securely. Funds are added instantly to your account.</p>
+						<div class="text-xs text-white/50 bg-white/5 rounded-lg p-3 border border-white/10 text-center">
+							<p class="font-medium mb-1">🔐 Secure Crypto Payment</p>
+							<p>Payments processed via cryptocurrency. Funds are added instantly upon confirmation.</p>
 						</div>
 					</div>
 				</div>
@@ -340,27 +336,22 @@
 						</h2>
 
 						<div class="space-y-4">
-							{#each userJobs as job}
+							{#each userJobs as job (job.job_id)}
 								<div class="bg-white/5 rounded-lg p-4 border border-white/10">
 									<div class="flex items-center justify-between">
 										<div class="flex-1">
 											<div class="flex items-center gap-3 mb-2">
 												<span class="text-white font-medium">Job {job.job_id.slice(0, 8)}...</span>
-												<span class="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-full border border-purple-400/30">
-													{formatJobType(job.job_type)}
-												</span>
 												<span class="px-2 py-1 bg-blue-500/20 text-blue-300 text-xs rounded-full border border-blue-400/30">
 													{job.status}
 												</span>
 											</div>
+											<p class="text-white/60 text-sm mb-1">
+												File: {job.original_file_name}
+											</p>
 											<p class="text-white/60 text-sm">
 												Started: {formatDate(job.created_at)}
 											</p>
-										</div>
-										<div class="text-right">
-											{#if job.estimated_cost_usd}
-												<p class="text-white font-semibold">${job.estimated_cost_usd.toFixed(2)}</p>
-											{/if}
 										</div>
 									</div>
 								</div>
