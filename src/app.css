@@ -16,4 +16,16 @@
     font-style: normal;
 }
 
+/*body {*/
+/*    font-family: 'Times New Roman', sans-serif;*/
+/*}*/
+
+.font-limelight {
+    font-family: 'Limelight', sans-serif !important;
+}
+
+.font-vina {
+    font-family: 'Vina Sans', sans-serif !important;
+}
+
 @tailwind utilities;

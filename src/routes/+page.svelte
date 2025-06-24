@@ -157,7 +157,7 @@
 						<div class="relative transform transition-all duration-700 ease-out"
 								 class:magnetic={leftHovered}
 								 style="transform: scale({leftHovered ? 1.1 : 1});">
-							<h2 class="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white mb-2 sm:mb-4 tracking-wider drop-shadow-2xl">
+							<h2 class="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white mb-2 sm:mb-4 tracking-wider drop-shadow-2xl font-limelight">
 								{#each dubLetters as letter, i (letter + i)}
 									<span
 										class="neural-letter blue-theme"
@@ -220,7 +220,7 @@
 						<div class="relative transform transition-all duration-700 ease-out"
 								 class:magnetic={rightHovered}
 								 style="transform: scale({rightHovered ? 1.1 : 1});">
-							<h2 class="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white mb-2 sm:mb-4 tracking-wider drop-shadow-2xl">
+							<h2 class="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white mb-2 sm:mb-4 tracking-wider drop-shadow-2xl font-limelight">
 								{#each syncLetters as letter, i (letter + i + 'sync')}
 									<span
 										class="neural-letter pink-theme"
