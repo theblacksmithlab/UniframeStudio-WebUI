@@ -180,7 +180,7 @@ class ApiClient {
 
 			if (Date.now() - startTime > maxDuration) {
 				await this.refundFailedJob(jobId);
-				onError('Pipeline timeout - maximum duration exceeded (24 hours)');
+				onError('Pipeline timeout - maximum duration exceeded (24 hours). Your payment has been refunded.');
 				return;
 			}
 
@@ -196,7 +196,8 @@ class ApiClient {
 
 				if (status.status === 'failed' || status.error_message) {
 					await this.refundFailedJob(jobId);
-					onError(status.error_message || 'Pipeline failed');
+					const errorMsg = status.error_message || 'Pipeline failed';
+					onError(`${errorMsg}. Your payment has been refunded.`);
 					return;
 				}
 
@@ -210,9 +211,9 @@ class ApiClient {
 					await this.refundFailedJob(jobId);
 
 					if (error instanceof ApiClientError) {
-						onError(`Too many consecutive errors: ${error.message}`);
+						onError(`Service temporarily unavailable: ${error.message}. Your payment has been refunded.`);
 					} else {
-						onError('Too many consecutive errors while checking pipeline status');
+						onError('Service temporarily unavailable. Your payment has been refunded.');
 					}
 					return;
 				}
