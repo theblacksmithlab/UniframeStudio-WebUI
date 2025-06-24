@@ -241,6 +241,6 @@
     }
 
     .logo-size {
-        height: calc(100% / 3);
+        height: calc(100% / 2.5);
     }
 </style>

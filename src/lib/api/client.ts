@@ -207,6 +207,8 @@ class ApiClient {
 				consecutiveErrors++;
 
 				if (consecutiveErrors >= maxConsecutiveErrors) {
+					await this.refundFailedJob(jobId);
+
 					if (error instanceof ApiClientError) {
 						onError(`Too many consecutive errors: ${error.message}`);
 					} else {
