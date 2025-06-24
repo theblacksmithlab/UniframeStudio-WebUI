@@ -166,7 +166,7 @@
 									rel="noopener noreferrer"
 									class="text-cyan-300 hover:text-cyan-200 transition-colors text-lg"
 								>
-									@uniframe_news
+									@the_viper_room
 								</a>
 								<p class="text-sm text-white/60 mt-1">Latest updates and announcements</p>
 							</div>
@@ -187,7 +187,7 @@
 									rel="noopener noreferrer"
 									class="text-green-300 hover:text-green-200 transition-colors text-lg"
 								>
-									@uniframe_support
+									@the_viper_room_chat
 								</a>
 								<p class="text-sm text-white/60 mt-1">Technical support and assistance</p>
 							</div>
