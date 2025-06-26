@@ -1,11 +1,15 @@
 <script lang="ts">
 	import { apiClient } from '$lib/api/client';
 	import { goto } from '$app/navigation';
+	import { Turnstile } from 'svelte-turnstile';
+	import { env } from '$env/dynamic/public';
 
 	let email = '';
 	let loading = false;
 	let message = '';
 	let error = '';
+	let captchaToken = '';
+	let turnstileReset: (() => void) | undefined;
 
 	async function handleSubmit() {
 		if (!email.trim()) {
@@ -18,12 +22,20 @@
 			return;
 		}
 
+		if (!captchaToken) {
+			error = 'Please complete the captcha verification';
+			return;
+		}
+
 		loading = true;
 		error = '';
 		message = '';
 
 		try {
-			const response = await apiClient.sendMagicLink({ email: email.trim() });
+			const response = await apiClient.sendMagicLink({
+				email: email.trim(),
+				captcha_token: captchaToken
+			});
 
 			if (response.success) {
 				message = response.message;
@@ -33,6 +45,8 @@
 		} catch (err) {
 			console.error('Magic link error:', err);
 			error = err instanceof Error ? err.message : 'Failed to send magic link';
+			turnstileReset?.();
+			captchaToken = '';
 		} finally {
 			loading = false;
 		}
@@ -52,6 +66,18 @@
 	function handleBackClick() {
 		goto('/');
 	}
+
+	function handleTurnstileError() {
+		captchaToken = '';
+		error = 'Captcha error. Please try again.';
+	}
+
+	function handleTurnstileCallback(event: CustomEvent<{ token: string }>) {
+		captchaToken = event.detail.token;
+		error = '';
+	}
+
+	$: canSubmit = email.trim() && isValidEmail(email) && captchaToken && !loading;
 </script>
 
 <svelte:head>
@@ -135,10 +161,21 @@
 							/>
 						</div>
 
+						<!-- Turnstile Captcha -->
+						<div class="mb-6 flex justify-center">
+							<Turnstile
+								siteKey={env.PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"}
+								theme="dark"
+								on:callback={handleTurnstileCallback}
+								on:error={handleTurnstileError}
+								bind:reset={turnstileReset}
+							/>
+						</div>
+
 						<button
 							type="submit"
-							disabled={loading || !email.trim()}
-							class="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-600 disabled:to-gray-600 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+							disabled={!canSubmit}
+							class="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-600 disabled:to-gray-600 disabled:cursor-not-allowed cursor-pointer text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
 						>
 							{#if loading}
 								<svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">

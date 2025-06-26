@@ -92,6 +92,7 @@ export const OPENAI_VOICES = [
 
 export interface SendMagicLinkRequest {
 	email: string;
+	captcha_token: string;
 }
 
 export interface VerifyTokenRequest {
