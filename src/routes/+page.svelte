@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import DropdownMenu from '$lib/utils/DropdownMenu.svelte';
+	import SubmitIdeaModal from '$lib/components/SubmitIdeaModal.svelte';
 	import { onMount } from 'svelte';
 
 	let leftHovered = false;
 	let rightHovered = false;
 	let showComingSoon = false;
 	let isLoaded = false;
+	let showIdeaModal = false;
 
 	let leftTypedText = '';
 	let rightTypedText = '';
@@ -16,9 +18,9 @@
 	const leftFullText = 'AI-powered video dubbing system';
 	const rightFullText = 'Cutting-edge lip-sync technology';
 
-	const dubLetters = ['D', 'U', 'B'];
-	const itLetters = ['I', 'T', '!'];
-	const syncLetters = ['S', 'Y', 'N', 'C'];
+	const dubLetters = ['//', 'D', 'U', 'B'];
+	// const itLetters = ['I', 'T', '!'];
+	const syncLetters = ['//', 'S', 'Y', 'N', 'C'];
 
 	let logoFlickering = false;
 
@@ -36,6 +38,8 @@
 			startLogoFlickering();
 		}, 1000);
 	});
+
+	function openIdeaModal() { showIdeaModal = true; }
 
 	function startLogoFlickering() {
 		logoFlickering = true;
@@ -167,16 +171,16 @@
 									</span>
 								{/each}
 							</h2>
-							<h3 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-wider drop-shadow-2xl">
-								{#each itLetters as letter, i (letter + i + 'it')}
-									<span
-										class="neural-letter blue-theme"
-										style="animation-delay: {Math.random() * 2 + 0.5}s"
-									>
-										{letter}
-									</span>
-								{/each}
-							</h3>
+<!--							<h3 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-wider drop-shadow-2xl font-limelight">-->
+<!--								{#each itLetters as letter, i (letter + i + 'it')}-->
+<!--									<span-->
+<!--										class="neural-letter blue-theme"-->
+<!--										style="animation-delay: {Math.random() * 2 + 0.5}s"-->
+<!--									>-->
+<!--										{letter}-->
+<!--									</span>-->
+<!--								{/each}-->
+<!--							</h3>-->
 						</div>
 
 						<div class="h-8 mt-6 flex items-center justify-center">
@@ -230,16 +234,16 @@
 									</span>
 								{/each}
 							</h2>
-							<h3 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-wider drop-shadow-2xl">
-								{#each itLetters as letter, i (letter + i + 'sync-it')}
-									<span
-										class="neural-letter pink-theme"
-										style="animation-delay: {Math.random() * 2 + 0.5}s"
-									>
-										{letter}
-									</span>
-								{/each}
-							</h3>
+<!--							<h3 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-wider drop-shadow-2xl font-limelight">-->
+<!--								{#each itLetters as letter, i (letter + i + 'sync-it')}-->
+<!--									<span-->
+<!--										class="neural-letter pink-theme"-->
+<!--										style="animation-delay: {Math.random() * 2 + 0.5}s"-->
+<!--									>-->
+<!--										{letter}-->
+<!--									</span>-->
+<!--								{/each}-->
+<!--							</h3>-->
 						</div>
 
 						<div class="h-8 mt-6 flex items-center justify-center">
@@ -267,37 +271,77 @@
 
 		<!-- Footer (10%) -->
 		<footer class="h-[10vh] flex items-center justify-center bg-black/80 backdrop-blur-md px-[3.3vh] relative">
-			<!-- Центрированный текст -->
+			<!-- Centered text -->
 			<p class="text-gray-500 text-xs sm:text-xs md:text-sm opacity-60 font-light">
 				© 2025 Uniframe Studio - AI Video Processing Platform
 			</p>
 
-			<!-- Contact & Support Button - справа -->
-			<button
-				on:click={() => goto('/contact&support')}
-				class="absolute right-[3.3vh] flex items-center gap-2 px-4 py-2 text-yellow-400/80 hover:text-yellow-300 hover:bg-yellow-400/10 rounded-lg transition-all duration-200 text-xs sm:text-sm font-medium cursor-pointer border border-yellow-400/20 hover:border-yellow-400/40"
-			>
-				<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-				</svg>
-				Contact & Support
-			</button>
+			<!-- Контейнер с кнопками справа -->
+			<div class="absolute right-[3.3vh] flex items-center gap-[1.2rem]">
+				<!-- Submit Idea Button -->
+				<button
+					on:click={openIdeaModal}
+					class="flex items-center gap-2 px-4 py-2
+				text-rose-400 hover:text-rose-300
+				hover:bg-rose-500/10
+				rounded-lg transition-all duration-200
+				text-xs sm:text-sm font-medium cursor-pointer
+				border border-rose-400/20 hover:border-rose-500/40
+				drop-shadow-[0_0_6px_rgba(236,72,153,0.4)] hover:drop-shadow-[0_0_12px_rgba(236,72,153,0.6)]"
+				>
+					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+									d="M12 2a7 7 0 00-4 12v2a1 1 0 001 1h6a1 1 0 001-1v-2a7 7 0 00-4-12zM10 18h4m-4 2h4" />
+					</svg>
+					Submit Idea
+				</button>
+
+				<!-- Contact & Support Button -->
+				<button
+					on:click={() => goto('/contact&support')}
+					class="flex items-center gap-2 px-4 py-2
+				text-blue-400 hover:text-blue-300
+				hover:bg-blue-500/10
+				rounded-lg transition-all duration-200
+				text-xs sm:text-sm font-medium cursor-pointer
+				border border-blue-400/20 hover:border-blue-500/40
+				drop-shadow-[0_0_6px_rgba(96,165,250,0.5)] hover:drop-shadow-[0_0_12px_rgba(96,165,250,0.7)]"
+				>
+					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+									d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+					</svg>
+					Contact & Support
+				</button>
+			</div>
 		</footer>
 	</div>
 
 	{#if showComingSoon}
 		<div class="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
-			<div class="coming-soon-notification">
-				<div class="flex items-center gap-3">
+			<div class="coming-soon-notification text-center">
+				<div class="flex items-center gap-3 justify-center">
 					<div class="w-3 h-3 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full animate-pulse"></div>
-					<span class="text-white text-xl font-medium">Lip-sync is coming soon!</span>
+
+					<span class="text-white text-xl font-medium leading-snug text-center">
+				LIP-SYNC<br>is coming soon!
+			</span>
+
 					<div class="w-3 h-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full animate-pulse"></div>
 				</div>
-				<p class="text-white/70 text-sm mt-2 text-center">This feature is currently in development</p>
+
+				<p class="text-white/70 text-sm mt-2 text-center">
+					This feature is currently in development
+				</p>
 			</div>
 		</div>
 	{/if}
 </div>
+
+<SubmitIdeaModal
+	isOpen={showIdeaModal}
+	onClose={() => showIdeaModal = false}
+/>
 
 <div id="modal-root"></div>
 

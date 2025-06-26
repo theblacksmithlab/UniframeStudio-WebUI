@@ -194,15 +194,15 @@
 						</div>
 
 						<!-- Response Time -->
-						<div class="bg-yellow-400/10 border border-yellow-400/20 rounded-lg p-4 mt-6">
-							<div class="flex items-center gap-2 text-yellow-400 mb-2">
+						<div class="border border-white/20 rounded-lg p-4 mt-6">
+							<div class="flex items-center gap-2 text-white/80 mb-2">
 								<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
 								</svg>
-								<span class="font-semibold">E-mail Response Time</span>
+								<span class="font-semibold text-white/70">E-mail Response Time</span>
 							</div>
-							<p class="text-white/80 text-sm">
-								We typically respond within 24 hours. For urgent issues, please use Telegram support for faster assistance.
+							<p class="text-white/50 text-sm">
+								We typically respond within 24 hours.<br>For urgent issues, please use Telegram support for faster assistance.
 							</p>
 						</div>
 					</div>
@@ -225,17 +225,6 @@
 </div>
 
 <style>
-    /*@font-face {*/
-    /*    font-family: 'Limelight';*/
-    /*    src: url('/fonts/Limelight-Regular.ttf') format('truetype');*/
-    /*    font-weight: normal;*/
-    /*    font-style: normal;*/
-    /*}*/
-
-    /*.font-limelight {*/
-    /*    font-family: 'Limelight', sans-serif;*/
-    /*}*/
-
     .fade-in-block {
         opacity: 0;
         transform: translateY(30px);

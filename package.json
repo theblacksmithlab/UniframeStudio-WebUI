@@ -41,6 +41,7 @@
 		"@auth/core": "^0.39.1",
 		"@auth/sveltekit": "^1.9.2",
 		"@types/node": "^22.15.21",
-		"nodemailer": "^6.10.1"
+		"nodemailer": "^6.10.1",
+		"svelte-turnstile": "^0.11.0"
 	}
 }

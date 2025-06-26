@@ -3,29 +3,38 @@
 @plugin '@tailwindcss/typography';
 
 @font-face {
-    font-family: 'Vina Sans';
-    src: url('/fonts/VinaSans-Regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
     font-family: 'Limelight';
     src: url('/fonts//Limelight-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
-/*body {*/
-/*    font-family: 'Times New Roman', sans-serif;*/
-/*}*/
+@font-face {
+    font-family: 'Bungee';
+    src: url('/fonts/BungeeOutline-Regular.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Gotham Pro';
+    src: url('/fonts/Gotham Pro Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+body {
+    font-family: 'Gotham Pro', Arial, sans-serif;
+}
 
 .font-limelight {
     font-family: 'Limelight', sans-serif !important;
 }
 
-.font-vina {
-    font-family: 'Vina Sans', sans-serif !important;
+.font-bungee {
+    font-family: 'Bungee', sans-serif !important;
 }
 
 @tailwind utilities;

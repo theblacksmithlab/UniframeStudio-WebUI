@@ -324,6 +324,16 @@ class ApiClient {
 			throw new ApiClientError('UPLOAD_ERROR', 'Upload network error');
 		}
 	}
+
+	async submitIdea(idea: string, captchaToken: string): Promise<{ success: boolean; message: string }> {
+		return this.request<{ success: boolean; message: string }>('/api/uniframe/submit-idea', {
+			method: 'POST',
+			body: JSON.stringify({
+				idea: idea.trim(),
+				captchaToken: captchaToken
+			}),
+		});
+	}
 }
 
 export const apiClient = new ApiClient();
