@@ -104,7 +104,7 @@
 				<h2 class="text-xl font-semibold text-white">Suggest an idea</h2>
 				<button
 					on:click={closeModal}
-					class="p-2 hover:bg-white/10 rounded-lg transition-colors"
+					class="p-2 hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
 					disabled={isSubmitting}
 					aria-label="Close"
 				>
@@ -185,10 +185,10 @@
 							type="submit"
 							disabled={!canSubmit}
 							class="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600
-								   hover:from-blue-500 hover:to-purple-500 disabled:from-gray-600 disabled:to-gray-600
-								   text-white font-medium rounded-lg transition-all duration-200
-								   disabled:cursor-not-allowed disabled:opacity-50
-								   focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+							hover:from-blue-500 hover:to-purple-500 disabled:from-gray-600 disabled:to-gray-600
+							text-white font-medium rounded-lg transition-all duration-200
+							disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer
+							focus:outline-none focus:ring-2 focus:ring-blue-500/50"
 						>
 							{#if isSubmitting}
 								<div class="flex items-center justify-center gap-2">
