@@ -48,7 +48,7 @@
 
 	function handleTurnstileError() {
 		captchaToken = '';
-		submitError = 'Ошибка капчи. Попробуйте еще раз.';
+		submitError = 'Captcha error. Please try again.';
 	}
 
 	async function submitIdea() {
@@ -69,7 +69,7 @@
 			if (error instanceof Error) {
 				submitError = error.message;
 			} else {
-				submitError = 'Произошла ошибка при отправке';
+				submitError = 'An error occurred while submitting';
 			}
 			// Сброс капчи при ошибке
 			turnstileReset?.();
@@ -101,12 +101,12 @@
 
 			<!-- Header -->
 			<div class="flex items-center justify-between p-6 border-b border-white/10">
-				<h2 class="text-xl font-semibold text-white">Можете предложить идею</h2>
+				<h2 class="text-xl font-semibold text-white">Suggest an idea</h2>
 				<button
 					on:click={closeModal}
 					class="p-2 hover:bg-white/10 rounded-lg transition-colors"
 					disabled={isSubmitting}
-					aria-label="Закрыть"
+					aria-label="Close"
 				>
 					<svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -125,7 +125,7 @@
 							</svg>
 						</div>
 						<h3 class="text-2xl font-semibold text-white mb-3">Thanks for feedback!</h3>
-						<p class="text-gray-400">Спасибо за ваше предложение</p>
+						<p class="text-gray-400">Thank you for your suggestion</p>
 					</div>
 				{:else}
 					<!-- Form -->
@@ -134,7 +134,7 @@
 						<div class="space-y-2">
 							<textarea
 								bind:value={ideaText}
-								placeholder="Опишите вашу идею..."
+								placeholder="Describe your idea..."
 								maxlength={MAX_CHARACTERS}
 								rows="6"
 								disabled={isSubmitting}
@@ -149,15 +149,15 @@
 								<div class="text-gray-400">
 									{#if remainingCharacters < 50}
 										<span class="text-yellow-400">
-											Осталось символов: {remainingCharacters}
+											Characters remaining: {remainingCharacters}
 										</span>
 									{:else}
-										Осталось символов: {remainingCharacters}
+										Characters remaining: {remainingCharacters}
 									{/if}
 								</div>
 								{#if remainingCharacters < 0}
 									<span class="text-red-400 text-xs">
-										Превышен лимит символов
+										Character limit exceeded
 									</span>
 								{/if}
 							</div>
@@ -193,7 +193,7 @@
 							{#if isSubmitting}
 								<div class="flex items-center justify-center gap-2">
 									<div class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-									Отправляем...
+									Submitting...
 								</div>
 							{:else}
 								Submit anonymously
