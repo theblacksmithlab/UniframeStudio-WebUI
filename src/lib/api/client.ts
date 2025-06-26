@@ -330,7 +330,7 @@ class ApiClient {
 			method: 'POST',
 			body: JSON.stringify({
 				idea: idea.trim(),
-				captchaToken: captchaToken
+				captcha_token: captchaToken!
 			}),
 		});
 	}
