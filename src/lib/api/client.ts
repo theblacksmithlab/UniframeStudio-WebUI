@@ -5,7 +5,7 @@ import type {
 	DubbingPipelineResponse,
 	DubbingPipelineStatus,
 	ApiError as ApiErrorType, SendMagicLinkRequest, AuthResponse, VerifyTokenRequest,
-	SessionCheckResponse, UserJob, TranscriptionData, UserBalance
+	SessionCheckResponse, UserJob, TranscriptionData, UserBalance, TopUpRequest, TopUpResponse
 } from '$lib/types/api_types';
 import { goto } from '$app/navigation';
 
@@ -332,6 +332,13 @@ class ApiClient {
 				idea: idea.trim(),
 				captcha_token: captchaToken!
 			}),
+		});
+	}
+
+	async topUpBalance(request: TopUpRequest): Promise<TopUpResponse> {
+		return this.request<TopUpResponse>('/api/uniframe/payment/topup', {
+			method: 'POST',
+			body: JSON.stringify(request),
 		});
 	}
 }

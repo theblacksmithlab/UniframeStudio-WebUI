@@ -138,3 +138,13 @@ export interface UserBalance {
 	max_concurrent_dubbing_jobs: number;
 	max_concurrent_lipsync_jobs: number;
 }
+
+export interface TopUpRequest {
+	amount_usd: number;
+}
+
+export interface TopUpResponse {
+	payment_url: string;
+	order_id: string;
+	amount_usd: number;
+}

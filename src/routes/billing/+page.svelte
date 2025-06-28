@@ -9,7 +9,6 @@
 	let isLoading = false;
 	let error = '';
 
-	// Top-up form
 	let topUpAmount = '';
 	let isTopUpProcessing = false;
 	let topUpError = '';
@@ -62,22 +61,23 @@
 		topUpSuccess = false;
 
 		try {
-			// TODO: Implement top-up API call
-			// await apiClient.topUpBalance({ amount_usd: amount });
+			const response = await apiClient.topUpBalance({ amount_usd: amount });
 
-			// Simulate API call for now
-			await new Promise(resolve => setTimeout(resolve, 2000));
+			window.location.href = response.payment_url;
 
-			topUpSuccess = true;
-			topUpAmount = '';
-
-			// Reload balance data
-			await loadBalanceData();
-
-			// Hide success message after 3 seconds
-			setTimeout(() => {
-				topUpSuccess = false;
-			}, 3000);
+			// // Simulate API call for now
+			// await new Promise(resolve => setTimeout(resolve, 2000));
+			//
+			// topUpSuccess = true;
+			// topUpAmount = '';
+			//
+			// // Reload balance data
+			// await loadBalanceData();
+			//
+			// // Hide success message after 3 seconds
+			// setTimeout(() => {
+			// 	topUpSuccess = false;
+			// }, 3000);
 
 		} catch (err) {
 			console.error('Top-up failed:', err);
