@@ -276,7 +276,7 @@
 				© 2025 Uniframe Studio - AI Video Processing Platform
 			</p>
 
-			<!-- Контейнер с кнопками справа -->
+			<!-- Footer buttons container -->
 			<div class="absolute right-[3.3vh] flex items-center gap-[1.2rem]">
 				<!-- Submit Idea Button -->
 				<button

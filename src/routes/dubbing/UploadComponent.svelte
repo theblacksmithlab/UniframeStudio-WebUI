@@ -219,23 +219,23 @@
 				📋 Video Requirements & Limitations
 			</h3>
 
-			<div class="space-y-2 text-amber-100/90 text-sm leading-relaxed">
+			<div class="space-y-2 text-amber-100/90 text-sm leading-relaxed text-left">
 				<p>
-					<strong>Audio Quality:</strong> For best results, use videos with clear speech and minimal background noise.
-					Loud music or overlapping voices may affect dubbing quality.
+					<strong>🎙 Audio:</strong> For best results, use videos with clear speech and minimal background noise.
+					<br>Loud music or overlapping voices may affect dubbing quality.
 				</p>
 
 				<p>
-					<strong>Duration:</strong> Longer videos will take significantly more time to process.
+					<strong>🎬 Content Type:</strong> The system performs best with lecture-style content, monologues, narrations, or structured dialogues.
+					<br>Action-heavy scenes with overlapping speech, loud sound effects, or background noise <strong>will</strong> reduce dubbing quality.
 				</p>
 
 				<p>
-					<strong>Language Detection:</strong> Our system works best with videos where the primary language is spoken clearly.
-					Heavy accents may require manual language selection.
+					<strong>🕒 Source Video Duration/Processing Time:</strong> Longer videos will take significantly more time to process.
 				</p>
 
 				<p>
-					<strong>Processing Time:</strong> Typical processing takes 2-5 minutes per minute of video content.
+					<strong>🌐 Language Detection:</strong> To improve accuracy, we recommend manually setting the source language, especially for content with accents, mixed languages, or non-standard pronunciation.
 				</p>
 			</div>
 		</div>
@@ -266,7 +266,7 @@
 	</div>
 
 	<div class="p-4 bg-white/5 rounded-lg">
-		<div class="text-2xl mb-2">⏱</div>
+		<div class="text-2xl mb-2">⌚</div>
 		<h3 class="text-white font-semibold mb-1">Flawless timing</h3>
 		<p class="text-white/60 text-sm">Algorithm ensures every word and every pause lands exactly where it should</p>
 	</div>

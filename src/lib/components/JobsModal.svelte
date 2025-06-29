@@ -91,7 +91,7 @@
 				<h2 class="text-xl font-semibold text-white">My Jobs</h2>
 				<button
 					on:click={onClose}
-					class="p-2 hover:bg-white/10 rounded-lg transition-colors"
+					class="p-2 hover:bg-white/10 rounded-lg transition-colors cursor-pointer"
 					aria-label="Close"
 				>
 					<svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -119,7 +119,7 @@
 						{#each displayedJobs as job (job.job_id)}
 							<button
 								on:click={() => selectJob(job.job_id)}
-								class="w-full p-4 bg-white/5 hover:bg-white/10 rounded-lg transition-colors text-left group"
+								class="w-full p-4 bg-white/5 hover:bg-white/10 rounded-lg transition-colors text-left group cursor-pointer"
 							>
 								<div class="flex items-center justify-between">
 									<div class="flex-1 min-w-0">
@@ -147,7 +147,7 @@
 						<div class="mt-6 text-center">
 							<button
 								on:click={showMore}
-								class="px-6 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors"
+								class="px-6 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-colors cursor-pointer"
 							>
 								Show More ({allJobs.length - displayedJobs.length} remaining)
 							</button>
