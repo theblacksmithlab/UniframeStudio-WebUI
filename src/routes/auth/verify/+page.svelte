@@ -91,7 +91,7 @@
 					<div class="flex items-center gap-4 sm:gap-6">
 						<button
 							on:click={handleGoHome}
-							class="flex items-center gap-2 px-3 py-2 sm:px-4 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 text-sm sm:text-base"
+							class="flex items-center gap-2 px-3 py-2 sm:px-4 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 text-sm sm:text-base cursor-pointer"
 						>
 							<svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -193,14 +193,14 @@
 						<div class="space-y-3">
 							<button
 								on:click={handleBackToLogin}
-								class="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-lg transition-all duration-200"
+								class="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-lg transition-all duration-200 cursor-pointer"
 							>
 								Request New Magic Link
 							</button>
 
 							<button
 								on:click={handleGoHome}
-								class="w-full py-3 px-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold rounded-lg transition-all duration-200"
+								class="w-full py-3 px-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold rounded-lg transition-all duration-200 cursor-pointer"
 							>
 								Back to Home
 							</button>

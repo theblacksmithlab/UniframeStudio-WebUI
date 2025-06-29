@@ -149,7 +149,7 @@
 </script>
 
 <div class="max-w-4xl mx-auto">
-	<!-- Заголовок -->
+	<!-- Title -->
 	<div class="text-center mb-8">
 		<h2 class="text-3xl font-bold text-white mb-4">
 			Configure Dubbing Settings
@@ -159,10 +159,10 @@
 		</p>
 	</div>
 
-	<!-- Информация о стоимости -->
+	<!-- Estimated cost -->
 	{#if config.estimated_cost_usd}
 		<div class="space-y-4 mb-6">
-			<!-- Стоимость обработки -->
+			<!-- Estimated processing cost -->
 			<div class="bg-blue-500/20 backdrop-blur-md rounded-2xl border border-blue-400/30 p-6">
 				<div class="flex items-center justify-between">
 					<div class="flex items-center gap-3">
@@ -172,9 +172,9 @@
 						<div>
 							<h3 class="text-lg font-semibold text-white">Processing Cost</h3>
 							{#if config.video_duration_seconds}
-								<p class="text-blue-200/80 text-sm">Duration: {Math.round(config.video_duration_seconds / 60)} minutes</p>
+								<p class="text-blue-200/80 text-sm">Source Video Duration: {Math.round(config.video_duration_seconds / 60)} minutes</p>
 							{:else}
-								<p class="text-blue-200/80 text-sm">Duration: calculating...</p>
+								<p class="text-blue-200/80 text-sm">Source Video Duration: calculating...</p>
 							{/if}
 						</div>
 					</div>
@@ -185,7 +185,7 @@
 				</div>
 			</div>
 
-			<!-- Информация о балансе -->
+			<!-- Balance info -->
 			{#if isCheckingBalance}
 				<div class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-6">
 					<div class="flex items-center gap-3">
@@ -195,7 +195,7 @@
 				</div>
 			{:else if config.user_balance}
 				<div class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-6">
-					<!-- Информация о балансе и лимитах -->
+					<!-- Info about balance and rate limits -->
 					<div class="mb-4">
 						<h3 class="text-lg font-semibold text-white mb-3">Your Balance and Limit Rates</h3>
 						<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
@@ -214,9 +214,9 @@
 						</div>
 					</div>
 
-					<!-- Статус и действия -->
+					<!-- Status and actions -->
 					{#if canProcessJob}
-						<!-- Все хорошо -->
+						<!-- All's good -->
 						<div class="flex items-center gap-2 text-green-400 bg-green-500/10 rounded-lg p-3">
 							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -224,7 +224,7 @@
 							<span class="font-medium">Ready to process</span>
 						</div>
 					{:else}
-						<!-- Есть проблемы -->
+						<!-- There are problems -->
 						<div class="space-y-3">
 							{#if !hasEnoughBalance}
 								<div class="flex items-start gap-3 text-red-400 bg-red-500/10 rounded-lg p-3">
@@ -254,12 +254,12 @@
 								</div>
 							{/if}
 
-							<!-- Кнопка пополнения только если проблема с балансом -->
+							<!-- Balance top-up button -->
 							{#if !hasEnoughBalance}
 								<div class="pt-2">
 									<button
 										on:click={handleTopUp}
-										class="w-full sm:w-auto px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition-colors"
+										class="w-full sm:w-auto px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition-colors cursor-pointer"
 									>
 										Top Up Balance
 									</button>
@@ -282,7 +282,7 @@
 						</div>
 						<button
 							on:click={checkBalance}
-							class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-colors"
+							class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition-colors cursor-pointer"
 						>
 							Retry
 						</button>
@@ -292,12 +292,12 @@
 		</div>
 	{/if}
 
-	<!-- Основная форма настроек -->
+	<!-- Main settings form -->
 	<div class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-8">
 
 		<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-			<!-- Левая колонка: Языковые настройки -->
+			<!-- Left column: Language settings -->
 			<div class="space-y-6">
 				<h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
 					<svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -306,7 +306,7 @@
 					Language Settings
 				</h3>
 
-				<!-- Исходный язык (опционально) -->
+				<!-- Source language (optional) -->
 				<div>
 					<label for="source-language" class="block text-white/80 font-medium mb-2">
 						Source Language (optional)
@@ -315,7 +315,7 @@
 						id="source-language"
 						bind:value={sourceLanguage}
 						on:change={handleSourceLanguageChange}
-						class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+						class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
 					>
 						<option value="">Auto-detect</option>
 						{#each SUPPORTED_LANGUAGES as lang (lang.code)}
@@ -325,7 +325,7 @@
 					<p class="text-white/50 text-sm mt-1">Leave empty for automatic detection</p>
 				</div>
 
-				<!-- Целевой язык (обязательно) -->
+				<!-- Target language -->
 				<div>
 					<label for="target-language" class="block text-white/80 font-medium mb-2">
 						Target Language *
@@ -334,7 +334,7 @@
 						id="target-language"
 						bind:value={targetLanguage}
 						on:change={handleTargetLanguageChange}
-						class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+						class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
 						required
 					>
 						<option value="" class="bg-slate-800">Select target language</option>
@@ -346,7 +346,7 @@
 				<p class="text-white/50 text-sm mt-1">Choose dubbing language</p>
 			</div>
 
-			<!-- Правая колонка: Настройки голоса -->
+			<!-- Right Column: Voice Settings -->
 			<div class="space-y-6">
 				<h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
 					<svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -355,7 +355,7 @@
 					Voice Settings
 				</h3>
 
-				<!-- TTS Провайдер -->
+				<!-- TTS Provider -->
 				<div>
 					<label for="tts-provider" class="block text-white/80 font-medium mb-2">
 						TTS Provider *
@@ -364,7 +364,7 @@
 						id="tts-provider"
 						bind:value={ttsProvider}
 						on:change={handleTtsProviderChange}
-						class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+						class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent cursor-pointer"
 					>
 						{#each availableProviders as provider (provider.id)}
 							<option
@@ -380,7 +380,7 @@
 					<p class="text-white/50 text-sm mt-1">Choose your preferred voice synthesis provider</p>
 				</div>
 
-				<!-- Выбор голоса -->
+				<!-- Voice selection -->
 				<div>
 					<label for="tts-voice" class="block text-white/80 font-medium mb-2">
 						Voice *
@@ -390,7 +390,7 @@
 							id="tts-voice"
 							bind:value={ttsVoice}
 							on:change={handleTtsVoiceChange}
-							class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+							class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent cursor-pointer"
 						>
 							{#each OPENAI_VOICES as voice (voice.id)}
 								<option value={voice.id} class="bg-slate-800">{voice.name}</option>
@@ -413,7 +413,7 @@
 
 		</div>
 
-		<!-- Ошибка конфигурации -->
+		<!-- Configuration Error -->
 		{#if configError}
 			<div class="mt-6 p-4 bg-red-500/20 border border-red-400/50 rounded-lg">
 				<p class="text-red-300 font-medium">
@@ -422,7 +422,7 @@
 			</div>
 		{/if}
 
-		<!-- Широкое поле для ключевых слов -->
+		<!-- A field for transcription keywords -->
 		<div class="mt-8 pt-8 border-t border-white/20">
 			<h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
 				<svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -452,7 +452,7 @@
 			</div>
 		</div>
 
-		<!-- Кнопка запуска -->
+		<!-- Start button -->
 		<div class="mt-8 text-center">
 			<button
 				on:click={handleStartProcessing}
@@ -465,11 +465,14 @@
 						Starting Processing...
 					</div>
 				{:else}
-					Start Video Processing
+					<div class="flex flex-col items-center leading-tight">
+						<span>Start Video Processing</span>
+						<span class="text-xs font-normal text-white/70 mt-1">Payment will be charged upon starting</span>
+					</div>
 				{/if}
 			</button>
 
-			<!-- Обновляем сообщения под кнопкой -->
+			<!-- Updating messaged under the main button -->
 			{#if !canStartProcessing && !isCheckingBalance && !isStarting}
 				<p class="text-white/50 text-sm mt-2">
 					{#if !hasRequiredFields}

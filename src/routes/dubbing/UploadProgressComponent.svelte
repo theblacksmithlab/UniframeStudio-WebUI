@@ -89,7 +89,7 @@
 		{#if progress < 100}
 			<button
 				on:click={handleCancel}
-				class="px-6 py-2 text-white/70 hover:text-white hover:bg-white/10 border border-white/20 hover:border-white/30 rounded-lg transition-all duration-200"
+				class="px-6 py-2 text-white/70 hover:text-white hover:bg-white/10 border border-white/20 hover:border-white/30 rounded-lg transition-all duration-200 cursor-pointer"
 			>
 				Cancel Upload
 			</button>

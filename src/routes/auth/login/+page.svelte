@@ -98,7 +98,7 @@
 					<div class="flex items-center gap-4 sm:gap-6">
 						<button
 							on:click={handleBackClick}
-							class="flex items-center gap-2 px-3 py-2 sm:px-4 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 text-sm sm:text-base"
+							class="flex items-center gap-2 px-3 py-2 sm:px-4 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 text-sm sm:text-base cursor-pointer"
 						>
 							<svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />

@@ -114,7 +114,7 @@
 					<div class="flex items-center gap-6">
 						<button
 							on:click={handleHomeClick}
-							class="flex items-center gap-2 px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
+							class="flex items-center gap-2 px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 cursor-pointer"
 						>
 							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -134,7 +134,7 @@
 						<button
 							on:click={loadBalanceData}
 							disabled={isLoading}
-							class="flex items-center gap-2 px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 disabled:opacity-50"
+							class="flex items-center gap-2 px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
 						>
 							<svg class="w-4 h-4 {isLoading ? 'animate-spin' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -264,7 +264,7 @@
 								<button
 									on:click={() => topUpAmount = amount.toString()}
 									disabled={isTopUpProcessing}
-									class="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/20 rounded-lg text-white transition-colors disabled:opacity-50"
+									class="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/20 rounded-lg text-white transition-colors disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
 								>
 									${amount}
 								</button>
