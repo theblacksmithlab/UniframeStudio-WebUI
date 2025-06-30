@@ -48,7 +48,7 @@
 </script>
 
 <div class="max-w-6xl mx-auto">
-	<!-- Заголовок успеха -->
+	<!-- Success title -->
 	<div class="text-center mb-8">
 		<div class="mb-4">
 			<div class="w-20 h-20 mx-auto bg-green-500/20 rounded-full flex items-center justify-center">
@@ -66,11 +66,11 @@
 	</div>
 
 	{#if hasVideo}
-		<!-- Видеоплеер -->
+		<!-- Video-player -->
 		<div class="mb-8">
 			<div class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-6">
 
-				<!-- Заголовок -->
+				<!-- Title -->
 				<div class="mb-6">
 					<h3 class="text-xl font-semibold text-white flex items-center gap-2">
 						<svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -80,21 +80,21 @@
 					</h3>
 				</div>
 
-				<!-- Видеоплеер -->
+				<!-- Video-player -->
 				<div class="max-w-4xl mx-auto">
 					<div class="relative bg-black rounded-lg overflow-hidden">
 						<!-- svelte-ignore a11y-media-has-caption -->
 						<video
 							src={displayVideoUrl}
 							controls
-							class="w-full h-auto"
+							class="w-full h-auto cursor-pointer"
 							preload="metadata"
 						>
 							Your browser does not support the video tag.
 						</video>
 					</div>
 
-					<!-- Информация о видео -->
+					<!-- Info about video -->
 					<div class="mt-4 text-center">
 						{#if !isPremiumUser}
 							<div class="p-3 bg-amber-500/10 border border-amber-400/30 rounded-lg">
@@ -111,7 +111,7 @@
 									<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
 									</svg>
-									Premium quality video without advertisements
+									You can download the result in the corresponding section below
 								</p>
 							</div>
 						{/if}
@@ -122,10 +122,10 @@
 		</div>
 	{/if}
 
-	<!-- Действия и информация -->
+	<!-- Actions and info -->
 	<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
 
-		<!-- Скачивание -->
+		<!-- Downloading -->
 		<div class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-6">
 			<h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
 				<svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -138,7 +138,7 @@
 				{#if hasVideo}
 					<button
 						on:click={() => downloadFile(displayVideoUrl, getFilename(displayVideoUrl, isPremiumUser ? 'dubbed_premium' : 'dubbed'))}
-						class="w-full p-4 bg-gradient-to-r from-green-500/20 to-emerald-500/20 hover:from-green-500/30 hover:to-emerald-500/30 border border-green-400/50 rounded-lg transition-all duration-200 flex items-center justify-between text-white group"
+						class="w-full p-4 bg-gradient-to-r from-green-500/20 to-emerald-500/20 hover:from-green-500/30 hover:to-emerald-500/30 border border-green-400/50 rounded-lg transition-all duration-200 flex items-center justify-between text-white group cursor-pointer"
 					>
 						<div class="flex items-center gap-3">
 							<div class="w-10 h-10 bg-green-500/30 rounded-lg flex items-center justify-center">
@@ -157,11 +157,11 @@
 					</button>
 				{/if}
 
-				<!-- Upgrade кнопка для обычных пользователей -->
+				<!-- Upgrade button for common users -->
 				{#if !isPremiumUser && hasRegularVideo}
 					<button
 						on:click={handleUpgrade}
-						class="w-full p-4 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 hover:from-yellow-500/30 hover:to-orange-500/30 border border-yellow-400/50 rounded-lg transition-all duration-200 flex items-center justify-between text-white group"
+						class="w-full p-4 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 hover:from-yellow-500/30 hover:to-orange-500/30 border border-yellow-400/50 rounded-lg transition-all duration-200 flex items-center justify-between text-white group cursor-pointer"
 					>
 						<div class="flex items-center gap-3">
 							<div class="w-10 h-10 bg-yellow-500/30 rounded-lg flex items-center justify-center">
@@ -188,7 +188,7 @@
 			</div>
 		</div>
 
-		<!-- Информация о процессе -->
+		<!-- Process summary -->
 		<div class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-6">
 			<h3 class="text-xl font-semibold text-white mb-4 flex items-center gap-2">
 				<svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -234,18 +234,18 @@
 
 	</div>
 
-	<!-- Действия -->
+	<!-- Actions -->
 	<div class="text-center space-x-4">
 		<button
 			on:click={startNew}
-			class="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105"
+			class="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105 cursor-pointer"
 		>
 			Process Another Video
 		</button>
 
 		<button
 			on:click={goHome}
-			class="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/30 text-white font-semibold rounded-xl transition-all duration-200"
+			class="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 hover:border-white/30 text-white font-semibold rounded-xl transition-all duration-200 cursor-pointer"
 		>
 			Back to Home
 		</button>

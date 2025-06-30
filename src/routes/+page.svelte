@@ -271,47 +271,49 @@
 
 		<!-- Footer (10%) -->
 		<footer class="h-[10vh] flex items-center justify-center bg-black/80 backdrop-blur-md px-[3.3vh] relative">
-			<!-- Centered text -->
-			<p class="text-gray-500 text-xs sm:text-xs md:text-sm opacity-60 font-light">
+			<!-- Centered text - hidden on mobile -->
+			<p class="text-gray-500 text-xs sm:text-xs md:text-sm opacity-60 font-light hidden sm:block">
 				© 2025 Uniframe Studio - AI Video Processing Platform
 			</p>
 
-			<!-- Footer buttons container -->
-			<div class="absolute right-[3.3vh] flex items-center gap-[1.2rem]">
+			<!-- Footer buttons container - responsive layout -->
+			<div class="w-full sm:absolute sm:right-[3.3vh] flex items-center gap-[1.2rem] sm:gap-[1.2rem] justify-center sm:justify-end">
 				<!-- Submit Idea Button -->
 				<button
 					on:click={openIdeaModal}
-					class="flex items-center gap-2 px-4 py-2
-				text-rose-400 hover:text-rose-300
-				hover:bg-rose-500/10
-				rounded-lg transition-all duration-200
-				text-xs sm:text-sm font-medium cursor-pointer
-				border border-rose-400/20 hover:border-rose-500/40
-				drop-shadow-[0_0_6px_rgba(236,72,153,0.4)] hover:drop-shadow-[0_0_12px_rgba(236,72,153,0.6)]"
+					class="flex items-center justify-center gap-2 px-4 py-2 flex-1 sm:flex-none
+		text-rose-400 hover:text-rose-300
+		hover:bg-rose-500/10
+		rounded-lg transition-all duration-200
+		text-xs sm:text-sm font-medium cursor-pointer
+		border border-rose-400/20 hover:border-rose-500/40
+		drop-shadow-[0_0_6px_rgba(236,72,153,0.4)] hover:drop-shadow-[0_0_12px_rgba(236,72,153,0.6)]"
 				>
 					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
 									d="M12 2a7 7 0 00-4 12v2a1 1 0 001 1h6a1 1 0 001-1v-2a7 7 0 00-4-12zM10 18h4m-4 2h4" />
 					</svg>
-					Submit Idea
+					<span class="hidden xs:inline sm:inline">Submit Idea</span>
+					<span class="xs:hidden sm:hidden">Submit Idea</span>
 				</button>
 
 				<!-- Contact & Support Button -->
 				<button
 					on:click={() => goto('/contact&support')}
-					class="flex items-center gap-2 px-4 py-2
-				text-blue-400 hover:text-blue-300
-				hover:bg-blue-500/10
-				rounded-lg transition-all duration-200
-				text-xs sm:text-sm font-medium cursor-pointer
-				border border-blue-400/20 hover:border-blue-500/40
-				drop-shadow-[0_0_6px_rgba(96,165,250,0.5)] hover:drop-shadow-[0_0_12px_rgba(96,165,250,0.7)]"
+					class="flex items-center justify-center gap-2 px-4 py-2 flex-1 sm:flex-none
+		text-blue-400 hover:text-blue-300
+		hover:bg-blue-500/10
+		rounded-lg transition-all duration-200
+		text-xs sm:text-sm font-medium cursor-pointer
+		border border-blue-400/20 hover:border-blue-500/40
+		drop-shadow-[0_0_6px_rgba(96,165,250,0.5)] hover:drop-shadow-[0_0_12px_rgba(96,165,250,0.7)]"
 				>
 					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
 									d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
 					</svg>
-					Contact & Support
+					<span class="hidden xs:inline sm:inline">Contact & Support</span>
+					<span class="xs:hidden sm:hidden">Contact us</span>
 				</button>
 			</div>
 		</footer>

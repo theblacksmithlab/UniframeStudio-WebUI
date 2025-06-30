@@ -415,7 +415,7 @@
 
 		<!-- Configuration Error -->
 		{#if configError}
-			<div class="mt-6 p-4 bg-red-500/20 border border-red-400/50 rounded-lg">
+			<div class="mt-6 p-4 bg-red-500/20 border border-red-400/50 rounded-lg text-center">
 				<p class="text-red-300 font-medium">
 					{configError}
 				</p>

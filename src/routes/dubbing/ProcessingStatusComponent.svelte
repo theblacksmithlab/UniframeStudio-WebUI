@@ -106,7 +106,7 @@
 </script>
 
 <div class="max-w-4xl mx-auto">
-	<!-- Заголовок -->
+	<!-- Title -->
 	<div class="text-center mb-8">
 		<h2 class="text-3xl font-bold text-white mb-4">
 			Processing Your Video
@@ -116,10 +116,10 @@
 		</p>
 	</div>
 
-	<!-- Основная карточка статуса -->
+	<!-- Main status card -->
 	<div class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-8 mb-8">
 
-		<!-- Общий прогресс -->
+		<!-- Overall progress -->
 		<div class="mb-8">
 			<div class="flex justify-between items-center mb-4">
 				<h3 class="text-xl font-semibold text-white">Overall Progress</h3>
@@ -129,18 +129,18 @@
 				</div>
 			</div>
 
-			<!-- Главный прогресс-бар -->
+			<!-- Main progress-bar -->
 			<div class="w-full bg-white/10 rounded-full h-4 overflow-hidden mb-4">
 				<div
 					class="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-emerald-500 rounded-full transition-all duration-1000 ease-out relative"
 					style="width: {progress}%"
 				>
-					<!-- Анимированный блик -->
+					<!-- Animated blink -->
 					<div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 animate-pulse"></div>
 				</div>
 			</div>
 
-			<!-- Текущий этап -->
+			<!-- Current stage -->
 			<div class="text-center">
 				<p class="text-lg font-medium text-white mb-1">{currentStepDescription}</p>
 				<p class="text-white/60 text-sm">
@@ -149,9 +149,9 @@
 			</div>
 		</div>
 
-		<!-- Визуализация этапов -->
+		<!-- Processing visualization -->
 		<div class="space-y-6">
-			<!-- Этап 1: Подготовка (Rust) -->
+			<!-- Stage 1: Preparation (Rust) -->
 			<div class="space-y-3">
 				<h4 class="text-lg font-semibold text-white mb-2 flex items-center gap-2">
 					<svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -184,7 +184,7 @@
 				</div>
 			</div>
 
-			<!-- Этап 2: Обработка (Python) -->
+			<!-- Stage 2: Processing (Python) -->
 			<div class="space-y-3">
 				<h4 class="text-lg font-semibold text-white mb-2 flex items-center gap-2">
 					<svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -229,7 +229,7 @@
 				{/if}
 			</div>
 
-			<!-- Этап 3: Финализация (Rust) -->
+			<!-- Stage 3: Finalization (Rust) -->
 			<div class="space-y-3">
 				<h4 class="text-lg font-semibold text-white mb-2 flex items-center gap-2">
 					<svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -257,10 +257,10 @@
 
 	</div>
 
-	<!-- Информация и действия -->
+	<!-- Info and actions -->
 	<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-		<!-- Информация о процессе -->
+		<!-- Processing info -->
 		<div class="bg-white/5 rounded-xl p-6">
 			<h4 class="text-lg font-semibold text-white mb-4">Processing Information</h4>
 			<div class="space-y-2 text-sm">
@@ -279,7 +279,7 @@
 			</div>
 		</div>
 
-		<!-- Действия -->
+		<!-- Actions -->
 		<div class="bg-white/5 rounded-xl p-6">
 			<h4 class="text-lg font-semibold text-white mb-4">Actions</h4>
 			<div class="space-y-4">
@@ -288,7 +288,7 @@
 				</p>
 				<button
 					on:click={handleCancel}
-					class="w-full px-4 py-2 text-white/70 hover:text-white hover:bg-white/10 border border-white/20 hover:border-white/30 rounded-lg transition-all duration-200 text-sm"
+					class="w-full px-4 py-2 text-white/70 hover:text-white hover:bg-white/10 border border-white/20 hover:border-white/30 rounded-lg transition-all duration-200 text-sm cursor-pointer"
 				>
 					Return Home
 				</button>

@@ -119,7 +119,7 @@
 {#if isVisible}
 	<!-- Backdrop -->
 	<button
-		class="fixed inset-0 z-[99998] bg-black/60 backdrop-blur-sm cursor-default"
+		class="fixed inset-0 z-[99998] bg-black/60 backdrop-blur-sm cursor-pointer"
 		on:click={handleClose}
 		aria-label="Close modal"
 	></button>
@@ -138,7 +138,7 @@
 				</div>
 				<button
 					on:click={handleClose}
-					class="text-white/60 hover:text-white hover:bg-white/10 transition-all duration-200 p-2 rounded-lg"
+					class="text-white/60 hover:text-white hover:bg-white/10 transition-all duration-200 p-2 rounded-lg cursor-pointer"
 					aria-label="Close modal"
 					disabled={isSaving}
 				>
@@ -150,7 +150,7 @@
 		</div>
 
 		<!-- Content с темным фоном и прокруткой -->
-		<div class="flex-1 overflow-y-auto bg-black/80">
+		<div class="flex-1 overflow-y-auto bg-black/20">
 			{#if isLoading}
 				<div class="p-8 text-center">
 					<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400 mx-auto mb-4"></div>
@@ -166,7 +166,7 @@
 					<p class="text-white mb-4">Error: {error}</p>
 					<button
 						on:click={loadTranscriptionFile}
-						class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors shadow-lg"
+						class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors shadow-lg cursor-pointer"
 					>
 						Retry
 					</button>
@@ -261,7 +261,7 @@
 					<button
 						on:click={handleContinueAsIs}
 						class="px-6 py-2 text-white/80 hover:text-white hover:bg-white/10 border border-white/30
-							   hover:border-white/50 rounded-lg transition-all duration-200"
+							   hover:border-white/50 rounded-lg transition-all duration-200 cursor-pointer"
 						disabled={isSaving}
 					>
 						Continue as is
@@ -271,7 +271,7 @@
 						<button
 							on:click={handleApproveChanges}
 							class="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600
-								   hover:to-purple-600 text-white rounded-lg transition-all duration-200 font-medium shadow-lg"
+								   hover:to-purple-600 text-white rounded-lg transition-all duration-200 font-medium shadow-lg cursor-pointer"
 							disabled={isSaving}
 						>
 							Approve Changes
