@@ -112,7 +112,7 @@
 			Processing Your Video
 		</h2>
 		<p class="text-white/70 text-lg">
-			The system is working on your video dubbing. Processing time depends on the length of the original video.
+			The system is working on your video dubbing.<br>Processing time depends on the length of the original video.
 		</p>
 	</div>
 

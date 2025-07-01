@@ -125,10 +125,11 @@
 	></button>
 
 	<!-- Modal без оверлея, прямо поверх контента -->
-	html<div class="fixed top-8 bottom-8 left-1/2 transform -translate-x-1/2 w-full max-w-[66vw] bg-black rounded-2xl border border-white/10 overflow-hidden flex flex-col z-[99999]">
+	html<div class="fixed top-8 bottom-8 left-1/2 transform -translate-x-1/2 w-full max-w-[66vw]
+            bg-black/60 backdrop-blur-lg rounded-2xl border border-white/15 overflow-hidden flex flex-col z-[99999]">
 
 		<!-- Header -->
-		<div class="p-6 border-b border-white/10 flex-shrink-0 bg-gradient-to-r from-blue-900/30 via-black to-purple-900/30">
+		<div class="p-6 border-b border-white/10 flex-shrink-0 bg-gradient-to-r from-blue-900/20 via-transparent to-purple-900/20">
 			<div class="flex justify-between items-start">
 				<div>
 					<h2 class="text-2xl font-bold text-white mb-2 drop-shadow-lg">Review Translation</h2>
@@ -150,7 +151,7 @@
 		</div>
 
 		<!-- Content с темным фоном и прокруткой -->
-		<div class="flex-1 overflow-y-auto bg-black/20">
+		<div class="flex-1 overflow-y-auto bg-white/3 backdrop-blur-sm">
 			{#if isLoading}
 				<div class="p-8 text-center">
 					<div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400 mx-auto mb-4"></div>
@@ -240,7 +241,8 @@
 
 		<!-- Footer с освеженным дизайном -->
 		{#if !isLoading && !error && segments.length > 0}
-			<div class="p-6 border-t border-white/15 flex justify-between items-center flex-shrink-0 bg-gradient-to-r from-purple-900/30 via-black to-blue-900/30">
+			<div class="p-6 border-t border-white/15 flex justify-between items-center flex-shrink-0
+                bg-gradient-to-r from-purple-900/20 via-transparent to-blue-900/20">
 				<div class="text-sm">
 					{#if isSaving}
 						<span class="text-blue-400 flex items-center gap-2">
