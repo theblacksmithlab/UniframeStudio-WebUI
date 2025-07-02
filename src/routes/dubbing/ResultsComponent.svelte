@@ -5,9 +5,9 @@
 	$: config = $dubbing;
 	$: resultUrls = config.resultUrls || {};
 
-	$: hasVideo = !!resultUrls.video_premium;
+	$: hasVideo = !!resultUrls.final_video;
 	$: hasAudio = !!resultUrls.audio_stereo;
-	$: displayVideoUrl = resultUrls.video_premium;
+	$: displayVideoUrl = resultUrls.final_video;
 
 	function downloadFile(url: string, filename: string) {
 		const link = document.createElement('a');
