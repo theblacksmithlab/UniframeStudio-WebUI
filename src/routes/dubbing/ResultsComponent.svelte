@@ -5,10 +5,9 @@
 	$: config = $dubbing;
 	$: resultUrls = config.resultUrls || {};
 
-	// Определяем доступные файлы
-	$: hasVideo = !!(resultUrls.final_video || resultUrls.final_video_premium);
-	$: hasAudio = !!resultUrls.final_audio_stereo;
-	$: displayVideoUrl = resultUrls.final_video_premium || resultUrls.final_video;
+	$: hasVideo = !!resultUrls.video_premium;
+	$: hasAudio = !!resultUrls.audio_stereo;
+	$: displayVideoUrl = resultUrls.video_premium;
 
 	function downloadFile(url: string, filename: string) {
 		const link = document.createElement('a');
@@ -43,7 +42,7 @@
 	}
 
 	function getAudioFilename(url: string): string {
-		return getFilename(url, 'dubbed_audio').replace('.mp4', '.wav');
+		return getFilename(url, 'dubbed_audio').replace('.mp4', '.mp3');
 	}
 </script>
 
@@ -147,7 +146,7 @@
 				{#if hasAudio}
 					<!-- Audio download -->
 					<button
-						on:click={() => downloadFile(resultUrls.final_audio_stereo, getAudioFilename(resultUrls.final_audio_stereo))}
+						on:click={() => downloadFile(resultUrls.audio_stereo, getAudioFilename(resultUrls.audio_stereo))}
 						class="w-full p-4 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 hover:from-blue-500/30 hover:to-cyan-500/30 border border-blue-400/50 rounded-lg transition-all duration-200 flex items-center justify-between text-white group cursor-pointer"
 					>
 						<div class="flex items-center gap-3">
