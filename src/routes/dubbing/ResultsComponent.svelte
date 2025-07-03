@@ -6,8 +6,10 @@
 	$: resultUrls = config.resultUrls || {};
 
 	$: hasVideo = !!resultUrls.final_video;
+	$: hasVideoWithBg = !!resultUrls.final_video_with_bg;
 	$: hasAudio = !!resultUrls.audio_stereo;
-	$: displayVideoUrl = resultUrls.final_video;
+	$: hasAudioWithBg = !!resultUrls.final_audio_stereo_with_bg;
+	$: displayVideoUrl = resultUrls.final_video_with_bg || resultUrls.final_video;
 
 	function downloadFile(url: string, filename: string) {
 		const link = document.createElement('a');
@@ -64,7 +66,7 @@
 		</p>
 	</div>
 
-	{#if hasVideo}
+	{#if hasVideo || hasVideoWithBg}
 		<!-- Video player -->
 		<div class="mb-8">
 			<div class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-6">
@@ -121,9 +123,9 @@
 
 			<div class="space-y-3">
 				{#if hasVideo}
-					<!-- Video download -->
+					<!-- Basic dubbed video download -->
 					<button
-						on:click={() => downloadFile(displayVideoUrl, getFilename(displayVideoUrl, 'dubbed_video'))}
+						on:click={() => downloadFile(resultUrls.final_video, getFilename(resultUrls.final_video, 'dubbed_video'))}
 						class="w-full p-4 bg-gradient-to-r from-green-500/20 to-emerald-500/20 hover:from-green-500/30 hover:to-emerald-500/30 border border-green-400/50 rounded-lg transition-all duration-200 flex items-center justify-between text-white group cursor-pointer"
 					>
 						<div class="flex items-center gap-3">
@@ -134,7 +136,30 @@
 							</div>
 							<div class="text-left">
 								<p class="font-semibold">Dubbed Video</p>
-								<p class="text-sm text-white/60">Your processed video with Uniframe Smart Dubbing</p>
+								<p class="text-sm text-white/60">Clean video with new AI-generated voiceover only</p>
+							</div>
+						</div>
+						<svg class="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M7 13h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v6a2 2 0 002 2z" />
+						</svg>
+					</button>
+				{/if}
+
+				{#if hasVideoWithBg}
+					<!-- Video with background download -->
+					<button
+						on:click={() => downloadFile(resultUrls.final_video_with_bg, getFilename(resultUrls.final_video_with_bg, 'dubbed_video_with_bg'))}
+						class="w-full p-4 bg-gradient-to-r from-purple-500/20 to-pink-500/20 hover:from-purple-500/30 hover:to-pink-500/30 border border-purple-400/50 rounded-lg transition-all duration-200 flex items-center justify-between text-white group cursor-pointer"
+					>
+						<div class="flex items-center gap-3">
+							<div class="w-10 h-10 bg-purple-500/30 rounded-lg flex items-center justify-center">
+								<svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+								</svg>
+							</div>
+							<div class="text-left">
+								<p class="font-semibold">Dubbed Video with Background</p>
+								<p class="text-sm text-white/60">Video with new voiceover + original audio as background</p>
 							</div>
 						</div>
 						<svg class="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -144,7 +169,7 @@
 				{/if}
 
 				{#if hasAudio}
-					<!-- Audio download -->
+					<!-- Audio stereo download -->
 					<button
 						on:click={() => downloadFile(resultUrls.audio_stereo, getAudioFilename(resultUrls.audio_stereo))}
 						class="w-full p-4 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 hover:from-blue-500/30 hover:to-cyan-500/30 border border-blue-400/50 rounded-lg transition-all duration-200 flex items-center justify-between text-white group cursor-pointer"
@@ -157,7 +182,7 @@
 							</div>
 							<div class="text-left">
 								<p class="font-semibold">Audio Track (Stereo)</p>
-								<p class="text-sm text-white/60">High-quality stereo audio track</p>
+								<p class="text-sm text-white/60">High-quality stereo version of the new voiceover</p>
 							</div>
 						</div>
 						<svg class="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -166,7 +191,30 @@
 					</button>
 				{/if}
 
-				{#if !hasVideo && !hasAudio}
+				{#if hasAudioWithBg}
+					<!-- Audio with background download -->
+					<button
+						on:click={() => downloadFile(resultUrls.final_audio_stereo_with_bg, getAudioFilename(resultUrls.final_audio_stereo_with_bg))}
+						class="w-full p-4 bg-gradient-to-r from-orange-500/20 to-red-500/20 hover:from-orange-500/30 hover:to-red-500/30 border border-orange-400/50 rounded-lg transition-all duration-200 flex items-center justify-between text-white group cursor-pointer"
+					>
+						<div class="flex items-center gap-3">
+							<div class="w-10 h-10 bg-orange-500/30 rounded-lg flex items-center justify-center">
+								<svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M9 12a3 3 0 106 0 3 3 0 00-6 0z" />
+								</svg>
+							</div>
+							<div class="text-left">
+								<p class="font-semibold">Audio Track with Background (Stereo)</p>
+								<p class="text-sm text-white/60">Mixed audio: new voiceover + original background sounds</p>
+							</div>
+						</div>
+						<svg class="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M7 13h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v6a2 2 0 002 2z" />
+						</svg>
+					</button>
+				{/if}
+
+				{#if !hasVideo && !hasVideoWithBg && !hasAudio && !hasAudioWithBg}
 					<div class="p-4 bg-red-500/20 border border-red-400/50 rounded-lg text-center">
 						<p class="text-red-300">No files available for download</p>
 					</div>
