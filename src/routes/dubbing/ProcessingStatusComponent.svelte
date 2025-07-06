@@ -14,7 +14,7 @@
 	$: pythonSteps = pipelineStatus?.processing_steps || [];
 	$: currentPythonStepIndex = pipelineStatus?.current_step_index ?? -1;
 
-	$: isReviewRequired = pipelineStatus?.step === 10;
+	$: isReviewRequired = pipelineStatus?.step === 11;
 	$: reviewFileUrl = pipelineStatus?.review_required_url;
 
 	let reviewProcessedAtStep: number | null = null;
