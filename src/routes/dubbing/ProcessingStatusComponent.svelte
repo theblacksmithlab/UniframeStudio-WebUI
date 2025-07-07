@@ -21,17 +21,24 @@
 
 	$: if (isReviewRequired && reviewFileUrl && !config.showReviewModal) {
 		if (reviewProcessedAtStep !== pipelineStatus?.step) {
+			reviewProcessedAtStep = pipelineStatus?.step || null;
 			dubbingActions.showReview(reviewFileUrl);
 		}
 	}
 
-	$: if (!config.showReviewModal && config.reviewProcessedUrl) {
-		reviewProcessedAtStep = pipelineStatus?.step || null;
-	}
-
-	$: if (pipelineStatus?.step && pipelineStatus.step !== reviewProcessedAtStep) {
-		reviewProcessedAtStep = null;
-	}
+	// $: if (isReviewRequired && reviewFileUrl && !config.showReviewModal) {
+	// 	if (reviewProcessedAtStep !== pipelineStatus?.step) {
+	// 		dubbingActions.showReview(reviewFileUrl);
+	// 	}
+	// }
+	//
+	// $: if (!config.showReviewModal && config.reviewProcessedUrl) {
+	// 	reviewProcessedAtStep = pipelineStatus?.step || null;
+	// }
+	//
+	// $: if (pipelineStatus?.step && pipelineStatus.step !== reviewProcessedAtStep) {
+	// 	reviewProcessedAtStep = null;
+	// }
 
 	let elapsedTime = 0;
 	let timeInterval: ReturnType<typeof setInterval>;
