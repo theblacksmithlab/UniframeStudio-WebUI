@@ -15,6 +15,7 @@
 	let hasChanges = false;
 
 	$: if (isVisible && reviewFileUrl) {
+		console.log('loadTranscriptionFile called');
 		loadTranscriptionFile();
 	}
 
@@ -69,6 +70,7 @@
 	}
 
 	async function handleContinueAsIs() {
+		console.log('handleContinueAsIs called');
 		if (!originalData || !config.jobId) {
 			error = 'No transcription data available';
 			return;
@@ -112,6 +114,7 @@
 	}
 
 	function handleClose() {
+		console.log('handleClose called');
 		handleContinueAsIs();
 	}
 </script>
@@ -125,7 +128,7 @@
 	></button>
 
 	<!-- Modal без оверлея, прямо поверх контента -->
-	html<div class="fixed top-8 bottom-8 left-1/2 transform -translate-x-1/2 w-full max-w-[66vw]
+	<div class="fixed top-8 bottom-8 left-1/2 transform -translate-x-1/2 w-full max-w-[66vw]
             bg-black/60 backdrop-blur-lg rounded-2xl border border-white/15 overflow-hidden flex flex-col z-[99999]">
 
 		<!-- Header -->
