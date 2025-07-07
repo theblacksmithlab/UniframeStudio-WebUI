@@ -22,6 +22,7 @@
 
 	$: if (!isVisible) {
 		isLoading = true;
+		isSaving = false;
 		error = '';
 		originalData = null;
 		segments = [];
