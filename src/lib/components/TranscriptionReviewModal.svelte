@@ -2,6 +2,7 @@
 	import { dubbing, dubbingActions } from '$lib/stores/dubbing';
 	import type { TranscriptionData, TranscriptionSegment } from '$lib/types/api_types';
 	import { apiClient } from '$lib/api/client';
+	import { onDestroy, onMount } from 'svelte';
 
 	$: config = $dubbing;
 	$: isVisible = config.showReviewModal;
@@ -26,6 +27,8 @@
 		segments = [];
 		hasChanges = false;
 	}
+
+	let reviewTimeout: ReturnType<typeof setTimeout> | null = null;
 
 	async function loadTranscriptionFile() {
 		if (!reviewFileUrl) return;
@@ -117,6 +120,21 @@
 		console.log('handleClose called');
 		handleContinueAsIs();
 	}
+
+	onMount(() => {
+		reviewTimeout = setTimeout(() => {
+			if (isVisible) {
+				console.log('Review timeout - closing modal after 14 minutes');
+				dubbingActions.hideReview();
+			}
+		}, 14 * 60 * 1000);
+	});
+
+	onDestroy(() => {
+		if (reviewTimeout) {
+			clearTimeout(reviewTimeout);
+		}
+	});
 </script>
 
 {#if isVisible}
