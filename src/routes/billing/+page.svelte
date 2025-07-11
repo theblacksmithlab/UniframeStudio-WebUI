@@ -308,7 +308,7 @@
 						</button>
 
 						<!-- Payment Info -->
-						<div class="text-xs text-white/50 bg-white/5 rounded-lg p-3 border border-white/10 text-left">
+						<div class="text-xs text-white/50 bg-white/5 rounded-lg p-3 border border-white/10 text-center">
 							<p class="font-medium mb-1">🔐 Secure Crypto Payment</p>
 							<p>Payments processed via cryptocurrency.<br>Funds are added instantly upon confirmation.</p>
 						</div>
