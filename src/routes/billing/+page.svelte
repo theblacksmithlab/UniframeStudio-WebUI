@@ -46,8 +46,8 @@
 			return;
 		}
 
-		if (amount < 1) {
-			topUpError = 'Minimum top-up amount is $1.00';
+		if (amount < 10) {
+			topUpError = 'Minimum top-up amount is $10.00';
 			return;
 		}
 
